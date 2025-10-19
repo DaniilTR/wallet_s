@@ -1,17 +1,17 @@
-// lib/models/wallet.dart
-
 import 'package:flutter/material.dart';
 
+// Модель данных для кошелька
 class Wallet {
-  final String id;
-  final String name;
-  final String currency;
-  final String symbol;
-  final double balance;
-  final String address;
-  final String iconUrl;
-  final Color color;
+  final String id; // Уникальный идентификатор
+  final String name; // Название кошелька
+  final String currency; // Валюта
+  final String symbol; // Символ валюты
+  final double balance; // Баланс
+  final String address; // Адрес кошелька
+  final String iconUrl; // URL иконки
+  final Color color; // Цвет для отображения
 
+  // Конструктор
   Wallet({
     required this.id,
     required this.name,
@@ -23,6 +23,7 @@ class Wallet {
     required this.color,
   });
 
+  // Фабричный метод для создания экземпляра из JSON
   factory Wallet.fromJson(Map<String, dynamic> json) {
     return Wallet(
       id: json['id'],
@@ -37,9 +38,12 @@ class Wallet {
   }
 }
 
+// Перечисление типов валют
 enum CurrencyType { btc, eth, usdt, usdc }
 
+// Расширение для CurrencyType
 extension CurrencyTypeExtension on CurrencyType {
+  // Получение символа валюты
   String get symbol {
     switch (this) {
       case CurrencyType.btc:
@@ -53,6 +57,7 @@ extension CurrencyTypeExtension on CurrencyType {
     }
   }
 
+  // Получение полного названия валюты
   String get fullName {
     switch (this) {
       case CurrencyType.btc:
@@ -66,6 +71,7 @@ extension CurrencyTypeExtension on CurrencyType {
     }
   }
 
+  // Получение цвета для валюты
   Color get color {
     switch (this) {
       case CurrencyType.btc:

@@ -5,8 +5,9 @@ import '../models/transaction.dart';
 import '../services/wallet_service.dart';
 import '../widgets/transaction_tile.dart';
 
+// Экран деталей кошелька
 class WalletDetailScreen extends StatefulWidget {
-  final Wallet wallet;
+  final Wallet wallet; // Кошелек для отображения
 
   const WalletDetailScreen({required this.wallet, super.key});
 
@@ -15,12 +16,15 @@ class WalletDetailScreen extends StatefulWidget {
 }
 
 class _WalletDetailScreenState extends State<WalletDetailScreen> {
+  // Сервис для работы с кошельками
   final WalletService _walletService = WalletService();
+  // Future для получения списка транзакций
   late Future<List<Transaction>> _transactionsFuture;
 
   @override
   void initState() {
     super.initState();
+    // Получаем транзакции для данного кошелька при инициализации
     _transactionsFuture = _walletService.getWalletTransactions(widget.wallet.id);
   }
 
@@ -30,10 +34,12 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          // Возвращаемся на предыдущий экран
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(widget.wallet.name),
         actions: [
+          // Кнопка для отображения опций кошелька
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () => _showWalletOptions(context),
@@ -43,15 +49,19 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Заголовок кошелька с балансом
             _buildWalletHeader(),
             const SizedBox(height: 24),
+            // Кнопки действий
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: _buildActionButtons(),
             ),
             const SizedBox(height: 32),
+            // Секция с адресом кошелька
             _buildAddressSection(),
             const SizedBox(height: 32),
+            // Секция с транзакциями
             _buildTransactionsSection(),
           ],
         ),
@@ -59,10 +69,12 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  // Виджет для заголовка кошелька
   Widget _buildWalletHeader() {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
+        // Градиентный фон
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -96,6 +108,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
               ),
             ),
             const SizedBox(height: 8),
+            // Отображение баланса в USD (с заглушкой курса)
             Text(
               '\$${(widget.wallet.balance * 50000).toStringAsFixed(2)}',
               style: TextStyle(
@@ -109,30 +122,32 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  // Виджет для кнопок действий
   Widget _buildActionButtons() {
     return Row(
       children: [
         _buildActionIconButton(
           icon: Icons.send,
-          label: 'Send',
-          onPressed: () => Navigator.pop(context),
+          label: 'Отправить', // 'Send'
+          onPressed: () => Navigator.pop(context), // TODO: реализовать навигацию для отправки
         ),
         const SizedBox(width: 12),
         _buildActionIconButton(
           icon: Icons.call_received,
-          label: 'Receive',
+          label: 'Получить', // 'Receive'
           onPressed: _showReceiveDialog,
         ),
         const SizedBox(width: 12),
         _buildActionIconButton(
           icon: Icons.refresh,
-          label: 'Refresh',
-          onPressed: () => setState(() {}),
+          label: 'Обновить', // 'Refresh'
+          onPressed: () => setState(() {}), // TODO: реализовать логику обновления
         ),
       ],
     );
   }
 
+  // Виджет для иконки с текстом
   Widget _buildActionIconButton({
     required IconData icon,
     required String label,
@@ -166,6 +181,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  // Виджет для секции с адресом кошелька
   Widget _buildAddressSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -173,10 +189,11 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Wallet Address',
+            'Адрес кошелька', // 'Wallet Address'
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
+          // Копирование адреса по нажатию
           GestureDetector(
             onTap: _copyAddress,
             child: Container(
@@ -210,7 +227,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Tap to copy address',
+            'Нажмите, чтобы скопировать адрес', // 'Tap to copy address'
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.grey.shade600,
             ),
@@ -220,6 +237,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  // Виджет для секции с транзакциями
   Widget _buildTransactionsSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -227,23 +245,25 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Transactions',
+            'Транзакции', // 'Transactions'
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
           FutureBuilder<List<Transaction>>(
             future: _transactionsFuture,
             builder: (context, snapshot) {
+              // Показываем индикатор загрузки
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
 
+              // Если нет данных или список пуст
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 32),
                     child: Text(
-                      'No transactions',
+                      'Нет транзакций', // 'No transactions'
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey.shade600,
                       ),
@@ -253,6 +273,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
               }
 
               final transactions = snapshot.data!;
+              // Список транзакций
               return ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -269,21 +290,23 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  // Копирует адрес в буфер обмена
   void _copyAddress() {
     Clipboard.setData(ClipboardData(text: widget.wallet.address));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Address copied!'),
+        content: Text('Адрес скопирован!'), // 'Address copied!'
         duration: Duration(seconds: 2),
       ),
     );
   }
 
+  // Показывает диалог для получения средств
   void _showReceiveDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Receive'),
+        title: const Text('Получить'), // 'Receive'
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -307,17 +330,18 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Done'),
+            child: const Text('Готово'), // 'Done'
           ),
           ElevatedButton(
             onPressed: _copyAddress,
-            child: const Text('Copy Address'),
+            child: const Text('Копировать адрес'), // 'Copy Address'
           ),
         ],
       ),
     );
   }
 
+  // Показывает опции кошелька
   void _showWalletOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -328,18 +352,18 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.edit),
-              title: const Text('Rename'),
-              onTap: () => Navigator.pop(context),
+              title: const Text('Переименовать'), // 'Rename'
+              onTap: () => Navigator.pop(context), // TODO: реализовать переименование
             ),
             ListTile(
               leading: const Icon(Icons.backup),
-              title: const Text('Backup'),
-              onTap: () => Navigator.pop(context),
+              title: const Text('Резервное копирование'), // 'Backup'
+              onTap: () => Navigator.pop(context), // TODO: реализовать резервное копирование
             ),
             ListTile(
               leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text('Delete', style: TextStyle(color: Colors.red)),
-              onTap: () => Navigator.pop(context),
+              title: const Text('Удалить', style: TextStyle(color: Colors.red)), // 'Delete'
+              onTap: () => Navigator.pop(context), // TODO: реализовать удаление
             ),
           ],
         ),

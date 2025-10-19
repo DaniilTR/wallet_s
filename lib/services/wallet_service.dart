@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
 
+// Сервис для управления кошельками и транзакциями
 class WalletService {
+  // Синглтон для сервиса
   static final WalletService _instance = WalletService._internal();
 
   factory WalletService() {
@@ -11,11 +13,13 @@ class WalletService {
 
   WalletService._internal();
 
-  // Mock данные
+  // Mock-данные для кошельков и транзакций
   late List<Wallet> _wallets;
   late List<Transaction> _transactions;
 
+  // Инициализация сервиса с mock-данными
   Future<void> initialize() async {
+    // Имитация задержки сети
     await Future.delayed(const Duration(milliseconds: 500));
 
     _wallets = [
@@ -100,11 +104,13 @@ class WalletService {
     ];
   }
 
+  // Получение списка всех кошельков
   Future<List<Wallet>> getWallets() async {
     await Future.delayed(const Duration(milliseconds: 300));
     return _wallets;
   }
 
+  // Получение кошелька по ID
   Future<Wallet?> getWallet(String id) async {
     await Future.delayed(const Duration(milliseconds: 200));
     try {
@@ -114,16 +120,19 @@ class WalletService {
     }
   }
 
+  // Получение списка всех транзакций
   Future<List<Transaction>> getTransactions() async {
     await Future.delayed(const Duration(milliseconds: 300));
     return _transactions;
   }
 
+  // Получение транзакций для конкретного кошелька (в данном примере возвращает все транзакции)
   Future<List<Transaction>> getWalletTransactions(String walletId) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return _transactions;
   }
 
+  // Создание нового кошелька
   Future<bool> createWallet({
     required String name,
     required String currency,
@@ -138,13 +147,14 @@ class WalletService {
       balance: 0.0,
       address: '0x${DateTime.now().millisecondsSinceEpoch.toRadixString(16)}',
       iconUrl: currency.toLowerCase(),
-      color: const Color(0xFF627EEA),
+      color: const Color(0xFF627EEA), // Используется заглушка цвета
     );
 
     _wallets.add(newWallet);
     return true;
   }
 
+  // Отправка транзакции
   Future<bool> sendTransaction({
     required String fromWalletId,
     required String toAddress,
@@ -158,7 +168,7 @@ class WalletService {
       type: 'send',
       amount: amount,
       address: toAddress,
-      status: 'completed',
+      status: 'completed', // Транзакция сразу считается выполненной
       timestamp: DateTime.now(),
       currency: wallet.symbol,
     );
@@ -167,10 +177,12 @@ class WalletService {
     return true;
   }
 
+  // Получение общего баланса (с заглушкой курса)
   double getTotalBalance() {
     return _wallets.fold(0, (sum, w) => sum + (w.balance * 1000));
   }
 
+  // Сокращение адреса для отображения
   String getShortAddress(String address) {
     if (address.length <= 12) return address;
     return '${address.substring(0, 6)}...${address.substring(address.length - 6)}';

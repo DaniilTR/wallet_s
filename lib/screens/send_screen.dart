@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/wallet.dart';
 import '../services/wallet_service.dart';
 
+// Экран отправки транзакции
 class SendScreen extends StatefulWidget {
   const SendScreen({super.key});
 
@@ -10,22 +11,29 @@ class SendScreen extends StatefulWidget {
 }
 
 class _SendScreenState extends State<SendScreen> {
+  // Сервис для работы с кошельками
   final WalletService _walletService = WalletService();
+  // Future для получения списка кошельков
   late Future<List<Wallet>> _walletsFuture;
 
+  // Контроллеры для полей ввода
   final addressController = TextEditingController();
   final amountController = TextEditingController();
+  // Выбранный кошелек
   Wallet? selectedWallet;
+  // Флаг загрузки
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    // Получаем список кошельков при инициализации
     _walletsFuture = _walletService.getWallets();
   }
 
   @override
   void dispose() {
+    // Освобождаем ресурсы контроллеров
     addressController.dispose();
     amountController.dispose();
     super.dispose();
@@ -37,9 +45,10 @@ class _SendScreenState extends State<SendScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          // Возвращаемся на предыдущий экран
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Send'),
+        title: const Text('Отправить'), // 'Send'
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -48,14 +57,19 @@ class _SendScreenState extends State<SendScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
+              // Секция выбора кошелька
               _buildSelectWalletSection(),
               const SizedBox(height: 32),
+              // Секция адреса получателя
               _buildRecipientSection(),
               const SizedBox(height: 32),
+              // Секция ввода суммы
               _buildAmountSection(),
               const SizedBox(height: 32),
+              // Секция комиссии сети
               _buildNetworkFeeSection(),
               const SizedBox(height: 40),
+              // Кнопка отправки
               _buildSendButton(),
             ],
           ),
@@ -64,12 +78,13 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  // Виджет для выбора кошелька
   Widget _buildSelectWalletSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select Wallet',
+          'Выберите кошелек', // 'Select Wallet'
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 12),
@@ -154,19 +169,20 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  // Виджет для ввода адреса получателя
   Widget _buildRecipientSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Recipient Address',
+          'Адрес получателя', // 'Recipient Address'
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 12),
         TextField(
           controller: addressController,
           decoration: InputDecoration(
-            hintText: 'Enter recipient address',
+            hintText: 'Введите адрес получателя', // 'Enter recipient address'
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -182,6 +198,7 @@ class _SendScreenState extends State<SendScreen> {
                 width: 2,
               ),
             ),
+            // Кнопка очистки поля
             suffixIcon: addressController.text.isNotEmpty
                 ? IconButton(
               icon: const Icon(Icons.clear),
@@ -197,12 +214,13 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  // Виджет для ввода суммы
   Widget _buildAmountSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Amount',
+          'Сумма', // 'Amount'
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 12),
@@ -227,6 +245,7 @@ class _SendScreenState extends State<SendScreen> {
                 width: 2,
               ),
             ),
+            // Кнопка для установки максимальной суммы
             suffixIcon: Padding(
               padding: const EdgeInsets.all(12),
               child: GestureDetector(
@@ -234,7 +253,7 @@ class _SendScreenState extends State<SendScreen> {
                     ? () => setState(() => amountController.text = selectedWallet!.balance.toString())
                     : null,
                 child: Text(
-                  'Max',
+                  'Макс', // 'Max'
                   style: TextStyle(
                     color: const Color(0xFF0098EA),
                     fontWeight: FontWeight.w600,
@@ -250,6 +269,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  // Виджет для отображения комиссии сети
   Widget _buildNetworkFeeSection() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -264,7 +284,7 @@ class _SendScreenState extends State<SendScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Network Fee',
+                'Комиссия сети', // 'Network Fee'
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               Text(
@@ -280,7 +300,7 @@ class _SendScreenState extends State<SendScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total',
+                'Итого', // 'Total'
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               Text(
@@ -296,7 +316,9 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  // Виджет для кнопки отправки
   Widget _buildSendButton() {
+    // Проверяем валидность данных для отправки
     final isValid = selectedWallet != null &&
         addressController.text.isNotEmpty &&
         amountController.text.isNotEmpty &&
@@ -321,7 +343,7 @@ class _SendScreenState extends State<SendScreen> {
           ),
         )
             : const Text(
-          'Send',
+          'Отправить', // 'Send'
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
@@ -331,6 +353,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  // Метод для отправки транзакции
   Future<void> _sendTransaction() async {
     setState(() => isLoading = true);
 
@@ -345,20 +368,31 @@ class _SendScreenState extends State<SendScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Transaction sent successfully!'),
+              content: Text('Транзакция успешно отправлена!'), // 'Transaction sent successfully!'
               backgroundColor: Colors.green,
             ),
           );
+          // Возвращаемся на предыдущий экран через 0.5 секунды
           Future.delayed(const Duration(milliseconds: 500), () {
             if (mounted) Navigator.pop(context);
           });
         }
+      } else {
+        // Обработка случая, когда транзакция не удалась, но исключение не было выброшено
+         if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Не удалось отправить транзакцию'), // 'Failed to send transaction'
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text('Ошибка: $e'), // 'Error: $e'
             backgroundColor: Colors.red,
           ),
         );

@@ -1,14 +1,14 @@
-
-// lib/models/transaction.dart
+// Модель данных для транзакции
 class Transaction {
-  final String id;
-  final String type; // 'send' или 'receive'
-  final double amount;
-  final String address;
-  final String status; // 'pending', 'completed', 'failed'
-  final DateTime timestamp;
-  final String currency;
+  final String id; // Уникальный идентификатор
+  final String type; // Тип транзакции: 'send' (отправлено) или 'receive' (получено)
+  final double amount; // Сумма транзакции
+  final String address; // Адрес получателя/отправителя
+  final String status; // Статус: 'pending' (в ожидании), 'completed' (завершено), 'failed' (не удалось)
+  final DateTime timestamp; // Временная метка
+  final String currency; // Валюта
 
+  // Конструктор
   Transaction({
     required this.id,
     required this.type,
@@ -19,6 +19,7 @@ class Transaction {
     required this.currency,
   });
 
+  // Фабричный метод для создания экземпляра из JSON
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
       id: json['id'],
@@ -31,5 +32,6 @@ class Transaction {
     );
   }
 
+  // Геттер, чтобы проверить, была ли транзакция отправлена
   bool get isSent => type == 'send';
 }

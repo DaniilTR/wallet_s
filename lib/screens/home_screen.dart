@@ -7,6 +7,7 @@ import '../widgets/transaction_tile.dart';
 import 'wallet_detail_screen.dart';
 import 'send_screen.dart';
 
+// Главный экран приложения
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,42 +16,52 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // Сервис для работы с кошельками
   final WalletService _walletService = WalletService();
+  // Future для отслеживания инициализации
   late Future<void> _initFuture;
 
   @override
   void initState() {
     super.initState();
+    // Инициализация сервиса кошельков
     _initFuture = _walletService.initialize();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Используем FutureBuilder для отображения данных после инициализации
       body: FutureBuilder(
         future: _initFuture,
         builder: (context, snapshot) {
+          // Показываем индикатор загрузки во время ожидания
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
+          // Основной контент экрана
           return CustomScrollView(
             slivers: [
+              // AppBar
               _buildSliverAppBar(),
+              // Секция с общим балансом
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                   child: _buildBalanceSection(),
                 ),
               ),
+              // Секция с кошельками
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
                   child: _buildWalletsSection(),
                 ),
               ),
+              // Секция с последними транзакциями
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
@@ -64,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Виджет для AppBar
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       elevation: 0,
@@ -88,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Виджет для секции с балансом
   Widget _buildBalanceSection() {
     return FutureBuilder<List<Wallet>>(
       future: _walletService.getWallets(),
@@ -95,37 +108,41 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!snapshot.hasData) return const SizedBox.shrink();
 
         final wallets = snapshot.data!;
+        // Считаем общий баланс
         double totalBalance = wallets.fold(0, (sum, w) => sum + w.balance);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Total Balance',
+              'Общий баланс', // 'Total Balance'
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey.shade600,
               ),
             ),
             const SizedBox(height: 8),
             Text(
+              // Отображаем общий баланс (в данном случае, с заглушкой курса)
               '\$${(totalBalance * 50000).toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(height: 12),
             Row(
               children: [
+                // Кнопка "Добавить"
                 Expanded(
                   child: _buildActionButton(
                     icon: Icons.add,
-                    label: 'Add',
+                    label: 'Добавить',
                     onPressed: _showCreateWalletDialog,
                   ),
                 ),
                 const SizedBox(width: 12),
+                // Кнопка "Отправить"
                 Expanded(
                   child: _buildActionButton(
                     icon: Icons.send,
-                    label: 'Send',
+                    label: 'Отправить',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => SendScreen()),
@@ -140,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Виджет для кнопок действий
   Widget _buildActionButton({
     required IconData icon,
     required String label,
@@ -165,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Виджет для секции с кошельками
   Widget _buildWalletsSection() {
     return FutureBuilder<List<Wallet>>(
       future: _walletService.getWallets(),
@@ -177,10 +196,11 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Your Wallets',
+              'Ваши кошельки', // 'Your Wallets'
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
+            // Список кошельков
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -188,6 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final wallet = wallets[index];
+                // Навигация на экран деталей кошелька
                 return GestureDetector(
                   onTap: () => Navigator.push(
                     context,
@@ -205,6 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Виджет для секции с транзакциями
   Widget _buildTransactionsSection() {
     return FutureBuilder<List<Transaction>>(
       future: _walletService.getTransactions(),
@@ -217,10 +239,11 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Recent Transactions',
+              'Последние транзакции', // 'Recent Transactions'
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
+            // Список последних транзакций
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -236,6 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Показывает диалог создания нового кошелька
   void _showCreateWalletDialog() {
     final nameController = TextEditingController();
     String selectedCurrency = 'BTC';
@@ -243,23 +267,25 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Create New Wallet'),
+        title: const Text('Создать новый кошелек'), // 'Create New Wallet'
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Поле для названия кошелька
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Wallet Name',
+                  labelText: 'Название кошелька', // 'Wallet Name'
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
+              // Выпадающий список для выбора валюты
               DropdownButtonFormField<String>(
                 value: selectedCurrency,
                 decoration: const InputDecoration(
-                  labelText: 'Currency',
+                  labelText: 'Валюта', // 'Currency'
                   border: OutlineInputBorder(),
                 ),
                 items: const [
@@ -276,20 +302,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
+          // Кнопка "Отмена"
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Отмена'), // 'Cancel'
           ),
+          // Кнопка "Создать"
           ElevatedButton(
             onPressed: () {
+              // Создаем кошелек
               _walletService.createWallet(
                 name: nameController.text,
                 currency: selectedCurrency,
               );
               Navigator.pop(context);
+              // Обновляем состояние для отображения нового кошелька
               setState(() {});
             },
-            child: const Text('Create'),
+            child: const Text('Создать'), // 'Create'
           ),
         ],
       ),
