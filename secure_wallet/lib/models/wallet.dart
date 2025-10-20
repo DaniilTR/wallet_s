@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 // lib/models/wallet.dart
 class Wallet {
   final String id;
@@ -76,4 +78,3 @@ extension CurrencyTypeExtension on CurrencyType {
     }
   }
 }
-

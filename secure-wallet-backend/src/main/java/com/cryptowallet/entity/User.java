@@ -1,8 +1,6 @@
-// src/main/java/com/cryptowallet/entity/User.java
 package com.cryptowallet.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
@@ -11,10 +9,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -38,9 +32,36 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Wallet> wallets;
 
+    public User() {
+    }
+
+    public User(String id, String username, String email, String password, Integer age, LocalDateTime createdAt, List<Wallet> wallets) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.createdAt = createdAt;
+        this.wallets = wallets;
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
     @Override
@@ -61,5 +82,105 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<Wallet> getWallets() {
+        return wallets;
+    }
+
+    public void setWallets(List<Wallet> wallets) {
+        this.wallets = wallets;
+    }
+
+    public static class UserBuilder {
+        private String id;
+        private String username;
+        private String email;
+        private String password;
+        private Integer age;
+        private LocalDateTime createdAt;
+        private List<Wallet> wallets;
+
+        UserBuilder() {
+        }
+
+        public UserBuilder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder age(Integer age) {
+            this.age = age;
+            return this;
+        }
+
+        public UserBuilder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public UserBuilder wallets(List<Wallet> wallets) {
+            this.wallets = wallets;
+            return this;
+        }
+
+        public User build() {
+            return new User(id, username, email, password, age, createdAt, wallets);
+        }
     }
 }

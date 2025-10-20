@@ -26,11 +26,14 @@ flutter:
 #   ├── config/
 #   │   └── theme.dart
 #   ├── models/
+#   │   ├── auth.dart
 #   │   ├── wallet.dart
 #   │   └── transaction.dart
 #   ├── services/
+#   │   ├── auth_service.dart
 #   │   └── wallet_service.dart
 #   ├── screens/
+#   │   ├── auth_screen.dart
 #   │   ├── home_screen.dart
 #   │   ├── wallet_detail_screen.dart
 #   │   └── send_screen.dart

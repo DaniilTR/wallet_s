@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
+    <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="" />
+    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/secure_wallet.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/AuthResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/CreateWalletRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/RegisterRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/SendTransactionRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/UserDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/App.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/App.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/CryptoWalletApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/CryptoWalletApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/AuthDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/AuthDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/TransactionDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/TransactionDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/WalletDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/WalletDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/Wallet.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/Wallet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/SecurityConfig.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;DaniilTR&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DaniilTR/wallet_s.git&quot;,
+    &quot;accountId&quot;: &quot;c386c23c-e1dc-40ad-aa87-1a70270ef037&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -20,18 +68,26 @@
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="showScratchesAndConsoles" value="false" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Flutter.secure_wallet.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "97b65ea5",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Wallet/App",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
@@ -62,5 +118,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
