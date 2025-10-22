@@ -1,9 +1,7 @@
-// src/main/java/com/cryptowallet/controller/WalletController.java
 package com.cryptowallet.controller;
 
 import com.cryptowallet.dto.*;
 import com.cryptowallet.service.WalletService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +10,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/wallets")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class WalletController {
     private final WalletService walletService;
+
+    // Явный конструктор для корректной инициализации (вместо Lombok)
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
+    }
 
     @GetMapping
     public ResponseEntity<List<WalletDTO>> getWallets(Authentication authentication) {

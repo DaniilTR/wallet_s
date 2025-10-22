@@ -1,21 +1,24 @@
-// src/main/java/com/cryptowallet/controller/TransactionController.java
 package com.cryptowallet.controller;
 
 import com.cryptowallet.dto.*;
 import com.cryptowallet.service.TransactionService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class TransactionController {
     private final TransactionService transactionService;
+
+    // Явный конструктор для корректной инициализации (вместо Lombok)
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @GetMapping
     public ResponseEntity<List<TransactionDTO>> getTransactions(Authentication authentication) {

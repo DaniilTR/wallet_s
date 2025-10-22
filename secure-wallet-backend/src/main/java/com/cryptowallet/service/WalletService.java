@@ -8,7 +8,6 @@ import com.cryptowallet.entity.Transaction;
 import com.cryptowallet.repository.WalletRepository;
 import com.cryptowallet.repository.UserRepository;
 import com.cryptowallet.repository.TransactionRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,11 +15,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class WalletService {
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+
+    public WalletService(WalletRepository walletRepository,
+                         UserRepository userRepository,
+                         TransactionRepository transactionRepository) {
+        this.walletRepository = walletRepository;
+        this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
+    }
 
     public void createDefaultWallets(User user) {
         // Создание USDT кошелька
@@ -46,7 +52,7 @@ public class WalletService {
 
     public WalletDTO createWallet(String userId, CreateWalletRequest request) {
         User user = userRepository.findById(userId).orElseThrow();
-        Wallet wallet = createWalletInternal(user, request.getName(), 
+        Wallet wallet = createWalletInternal(user, request.getName(),
                 request.getCurrency(), request.getCurrency(), 0.0);
         return convertToDTO(wallet);
     }
@@ -69,7 +75,7 @@ public class WalletService {
         User user = userRepository.findById(userId).orElseThrow();
         Wallet wallet = walletRepository.findByIdAndUser(walletId, user)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
-        
+
         return transactionRepository.findByWallet(wallet).stream()
                 .map(this::convertTransactionToDTO)
                 .collect(Collectors.toList());

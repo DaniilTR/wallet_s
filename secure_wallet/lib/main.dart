@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'config/theme.dart';
-import 'screens/auth_screen.dart';
-import 'screens/home_screen.dart';
-import 'services/auth_service.dart';
+import 'widgets/auth_checker.dart'; // Импортируем наш новый виджет
 
+/// Главная функция приложения.
 void main() {
+  // Запускает приложение, передавая корневой виджет [MyApp].
   runApp(const MyApp());
 }
 
+/// [MyApp] — это виджет без состояния (StatelessWidget), который настраивает тему и начальный экран
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -18,22 +19,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
+
       home: AuthChecker(),
       debugShowCheckedModeBanner: false,
     );
-  }
-}
-
-class AuthChecker extends StatelessWidget {
-  final AuthService _authService = AuthService();
-
-  AuthChecker({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    if (_authService.isAuthenticated) {
-      return const HomeScreen();
-    }
-    return const AuthScreen();
   }
 }

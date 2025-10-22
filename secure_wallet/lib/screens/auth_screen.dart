@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../models/auth.dart';
+import '../screens/home_screen.dart';
 import '../services/auth_service.dart';
-import 'home_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -15,11 +16,8 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  // Login fields
   final _loginUsernameController = TextEditingController();
   final _loginPasswordController = TextEditingController();
-
-  // Register fields
   final _registerUsernameController = TextEditingController();
   final _registerEmailController = TextEditingController();
   final _registerPasswordController = TextEditingController();
@@ -352,7 +350,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Widget _buildAgeSelector() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(10),
@@ -360,7 +358,10 @@ class _AuthScreenState extends State<AuthScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Age: '),
+          const Text(
+            'Your Age:',
+            style: TextStyle(fontSize: 16),
+          ),
           Row(
             children: [
               IconButton(
@@ -372,13 +373,13 @@ class _AuthScreenState extends State<AuthScreen> {
               Text(
                 '$_selectedAge',
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: _selectedAge < 120
+                onPressed: _selectedAge < 100
                     ? () => setState(() => _selectedAge++)
                     : null,
               ),
