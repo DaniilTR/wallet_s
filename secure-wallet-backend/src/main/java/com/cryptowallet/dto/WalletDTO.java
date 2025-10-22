@@ -11,17 +11,19 @@ public class WalletDTO {
     private String address;
     private List<TransactionDTO> transactions;
 
+    // Пустой конструктор для десериализации
     public WalletDTO() {
     }
 
-    public WalletDTO(String id, String name, String currency, String symbol, Double balance, String address, List<TransactionDTO> transactions) {
-        this.id = id;
-        this.name = name;
-        this.currency = currency;
-        this.symbol = symbol;
-        this.balance = balance;
-        this.address = address;
-        this.transactions = transactions;
+    // Приватный конструктор для использования билдером
+    private WalletDTO(WalletDTOBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.currency = builder.currency;
+        this.symbol = builder.symbol;
+        this.balance = builder.balance;
+        this.address = builder.address;
+        this.transactions = builder.transactions;
     }
 
     public static WalletDTOBuilder builder() {
@@ -55,7 +57,7 @@ public class WalletDTO {
         public WalletDTOBuilder transactions(List<TransactionDTO> transactions) { this.transactions = transactions; return this; }
 
         public WalletDTO build() {
-            return new WalletDTO(id, name, currency, symbol, balance, address, transactions);
+            return new WalletDTO(this);
         }
     }
 }

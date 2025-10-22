@@ -35,21 +35,24 @@ public class Wallet {
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
+    // Приватный конструктор для использования билдером
+    private Wallet(WalletBuilder builder) {
+        this.id = builder.id;
+        this.user = builder.user;
+        this.name = builder.name;
+        this.currency = builder.currency;
+        this.symbol = builder.symbol;
+        this.balance = builder.balance;
+        this.address = builder.address;
+        this.createdAt = builder.createdAt;
+        this.transactions = builder.transactions;
+    }
+
+    // Пустой конструктор для JPA
     public Wallet() {
     }
 
-    public Wallet(String id, User user, String name, String currency, String symbol, Double balance, String address, LocalDateTime createdAt, List<Transaction> transactions) {
-        this.id = id;
-        this.user = user;
-        this.name = name;
-        this.currency = currency;
-        this.symbol = symbol;
-        this.balance = balance;
-        this.address = address;
-        this.createdAt = createdAt;
-        this.transactions = transactions;
-    }
-
+    // Статический метод для получения билдера
     public static WalletBuilder builder() {
         return new WalletBuilder();
     }
@@ -74,6 +77,7 @@ public class Wallet {
     public List<Transaction> getTransactions() { return transactions; }
     public void setTransactions(List<Transaction> transactions) { this.transactions = transactions; }
 
+    // Вложенный статический класс Builder
     public static class WalletBuilder {
         private String id;
         private User user;
@@ -85,18 +89,53 @@ public class Wallet {
         private LocalDateTime createdAt;
         private List<Transaction> transactions;
 
-        public WalletBuilder id(String id) { this.id = id; return this; }
-        public WalletBuilder user(User user) { this.user = user; return this; }
-        public WalletBuilder name(String name) { this.name = name; return this; }
-        public WalletBuilder currency(String currency) { this.currency = currency; return this; }
-        public WalletBuilder symbol(String symbol) { this.symbol = symbol; return this; }
-        public WalletBuilder balance(Double balance) { this.balance = balance; return this; }
-        public WalletBuilder address(String address) { this.address = address; return this; }
-        public WalletBuilder createdAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
-        public WalletBuilder transactions(List<Transaction> transactions) { this.transactions = transactions; return this; }
+        public WalletBuilder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public WalletBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public WalletBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public WalletBuilder currency(String currency) {
+            this.currency = currency;
+            return this;
+        }
+
+        public WalletBuilder symbol(String symbol) {
+            this.symbol = symbol;
+            return this;
+        }
+
+        public WalletBuilder balance(Double balance) {
+            this.balance = balance;
+            return this;
+        }
+
+        public WalletBuilder address(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public WalletBuilder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public WalletBuilder transactions(List<Transaction> transactions) {
+            this.transactions = transactions;
+            return this;
+        }
 
         public Wallet build() {
-            return new Wallet(id, user, name, currency, symbol, balance, address, createdAt, transactions);
+            return new Wallet(this);
         }
     }
 }

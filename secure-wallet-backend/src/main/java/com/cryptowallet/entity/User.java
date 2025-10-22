@@ -45,10 +45,6 @@ public class User implements UserDetails {
         this.wallets = wallets;
     }
 
-    public static UserBuilder builder() {
-        return new UserBuilder();
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -130,57 +126,5 @@ public class User implements UserDetails {
 
     public void setWallets(List<Wallet> wallets) {
         this.wallets = wallets;
-    }
-
-    public static class UserBuilder {
-        private String id;
-        private String username;
-        private String email;
-        private String password;
-        private Integer age;
-        private LocalDateTime createdAt;
-        private List<Wallet> wallets;
-
-        UserBuilder() {
-        }
-
-        public UserBuilder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public UserBuilder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public UserBuilder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public UserBuilder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public UserBuilder age(Integer age) {
-            this.age = age;
-            return this;
-        }
-
-        public UserBuilder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public UserBuilder wallets(List<Wallet> wallets) {
-            this.wallets = wallets;
-            return this;
-        }
-
-        public User build() {
-            return new User(id, username, email, password, age, createdAt, wallets);
-        }
     }
 }

@@ -4,7 +4,40 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="" />
+    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/exception/BadCredentialsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/exception/EmailAlreadyExistsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/exception/UserNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/exception/UsernameAlreadyExistsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/payload/request/RegisterRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/payload/response/AuthResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/TransactionDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/TransactionDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/WalletDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/dto/WalletDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/Wallet.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/entity/Wallet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/WalletService.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/WalletService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/TransactionDTO$TransactionDTOBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/TransactionDTO$TransactionDTOBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/TransactionDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/TransactionDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/WalletDTO$WalletDTOBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/WalletDTO$WalletDTOBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/WalletDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/dto/WalletDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/User$UserBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet$WalletBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet$WalletBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/service/AuthService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/service/WalletService.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/service/WalletService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar.original" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

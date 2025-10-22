@@ -1,4 +1,3 @@
-// src/main/java/com/cryptowallet/service/WalletService.java
 package com.cryptowallet.service;
 
 import com.cryptowallet.dto.*;
@@ -13,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.security.SecureRandom; // Импортируем SecureRandom
+import java.util.HexFormat; // Импортируем HexFormat для Java 17+
 
 @Service
 public class WalletService {
@@ -81,8 +82,12 @@ public class WalletService {
                 .collect(Collectors.toList());
     }
 
+    // Исправленный метод для генерации адреса кошелька
     private String generateWalletAddress() {
-        return "0x" + UUID.randomUUID().toString().replace("-", "").substring(0, 40);
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[20]; // 20 байт = 40 шестнадцатеричных символов
+        random.nextBytes(bytes);
+        return "0x" + HexFormat.of().formatHex(bytes); // Преобразуем байты в шестнадцатеричную строку
     }
 
     private WalletDTO convertToDTO(Wallet wallet) {
