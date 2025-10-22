@@ -1,6 +1,7 @@
 com\cryptowallet\service\WalletService.class
 com\cryptowallet\CryptoWalletApplication.class
 com\cryptowallet\entity\Wallet.class
+com\cryptowallet\security\JwtUtil.class
 com\cryptowallet\entity\Wallet$WalletBuilder.class
 com\cryptowallet\dto\UserDTO.class
 com\cryptowallet\controller\WalletController.class
@@ -11,7 +12,6 @@ com\cryptowallet\dto\LoginRequest.class
 com\cryptowallet\dto\WalletDTO.class
 com\cryptowallet\repository\UserRepository.class
 com\cryptowallet\entity\Transaction.class
-com\cryptowallet\config\SecurityConfig.class
 com\cryptowallet\config\CorsConfig.class
 com\cryptowallet\controller\AuthController.class
 com\cryptowallet\dto\CreateWalletRequest.class
@@ -19,7 +19,6 @@ com\cryptowallet\dto\UserDTO$UserDTOBuilder.class
 com\cryptowallet\entity\User$UserBuilder.class
 com\cryptowallet\security\SecurityConfig.class
 com\cryptowallet\dto\TransactionDTO$TransactionDTOBuilder.class
-com\cryptowallet\security\JwtTokenProvider.class
 com\cryptowallet\dto\SendTransactionRequest.class
 com\cryptowallet\service\TransactionService.class
 com\cryptowallet\dto\AuthResponse.class
@@ -28,5 +27,6 @@ com\cryptowallet\dto\TransactionDTO.class
 com\cryptowallet\controller\TransactionController.class
 com\cryptowallet\entity\Transaction$TransactionBuilder.class
 com\cryptowallet\dto\RegisterRequest.class
+com\cryptowallet\security\CustomUserDetailsService.class
 com\cryptowallet\service\AuthService.class
 com\cryptowallet\repository\TransactionRepository.class
