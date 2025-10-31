@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger; // Импортируем Logger
+import org.slf4j.LoggerFactory; // Импортируем LoggerFactory
 
 @Service
 public class AuthService {
@@ -39,47 +39,40 @@ public class AuthService {
 
     public AuthResponse registerUser(RegisterRequest registerRequest) {
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            logger.warn("Registration failed: username already taken. username={}", registerRequest.getUsername());
             throw new UsernameAlreadyExistsException("Username is already taken!");
         }
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            logger.warn("Registration failed: email already in use. email={}", registerRequest.getEmail());
             throw new EmailAlreadyExistsException("Email is already in use!");
         }
 
         User user = new User();
-        user.setId(java.util.UUID.randomUUID().toString());
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setAge(registerRequest.getAge());
         user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
 
-    User newUser = userRepository.save(user);
-    logger.info("Registration successful: username={}, id={}", newUser.getUsername(), newUser.getId());
+        User newUser = userRepository.save(user);
         walletService.createDefaultWallets(newUser);
 
-        String jwt = jwtUtil.generateTokenForSubject(newUser.getId());
+        String jwt = jwtUtil.generateToken(newUser);
         return new AuthResponse(jwt);
     }
 
     public AuthResponse loginUser(LoginRequest loginRequest) {
-    logger.info("Attempting login for username: {}", loginRequest.getUsername());
+        logger.info("Attempting login for username: {}", loginRequest.getUsername()); // Логируем имя пользователя
 
         User user = userRepository.findByUsername(loginRequest.getUsername())
-        .orElseThrow(() -> {
-            logger.warn("Login failed: user not found. username={}", loginRequest.getUsername());
-            return new UserNotFoundException("User not found with username: " + loginRequest.getUsername());
-        });
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + loginRequest.getUsername()));
+
+        logger.info("Raw password from request: {}", loginRequest.getPassword()); // Логируем сырой пароль
+        logger.info("Hashed password from DB: {}", user.getPassword()); // Логируем хешированный пароль из БД
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            logger.warn("Login failed: invalid password. username={}", loginRequest.getUsername());
             throw new BadCredentialsException("Invalid password");
         }
 
-        String jwt = jwtUtil.generateTokenForSubject(user.getId());
-        logger.info("Login successful: username={}, id={}", user.getUsername(), user.getId());
+        String jwt = jwtUtil.generateToken(user);
         return new AuthResponse(jwt);
     }
 }

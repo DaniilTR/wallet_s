@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.security.SecureRandom; // Импортируем SecureRandom
 import java.util.HexFormat; // Импортируем HexFormat для Java 17+
-import java.math.BigDecimal;
 
 @Service
 public class WalletService {
@@ -32,10 +31,10 @@ public class WalletService {
 
     public void createDefaultWallets(User user) {
         // Создание USDT кошелька
-        createWalletInternal(user, "My USDT", "USDT", "USDT", BigDecimal.ZERO);
+        createWalletInternal(user, "My USDT", "USDT", "USDT", 0.0);
 
         // Создание ETH кошелька
-        createWalletInternal(user, "My Ethereum", "Ethereum", "ETH", BigDecimal.ZERO);
+        createWalletInternal(user, "My Ethereum", "Ethereum", "ETH", 0.0);
     }
 
     public List<WalletDTO> getUserWallets(String userId) {
@@ -55,11 +54,11 @@ public class WalletService {
     public WalletDTO createWallet(String userId, CreateWalletRequest request) {
         User user = userRepository.findById(userId).orElseThrow();
         Wallet wallet = createWalletInternal(user, request.getName(),
-                request.getCurrency(), request.getCurrency(), BigDecimal.ZERO);
+                request.getCurrency(), request.getCurrency(), 0.0);
         return convertToDTO(wallet);
     }
 
-    private Wallet createWalletInternal(User user, String name, String currency, String symbol, BigDecimal balance) {
+    private Wallet createWalletInternal(User user, String name, String currency, String symbol, Double balance) {
         Wallet wallet = Wallet.builder()
                 .id(UUID.randomUUID().toString())
                 .name(name)
@@ -68,9 +67,7 @@ public class WalletService {
                 .balance(balance)
                 .address(generateWalletAddress())
                 .user(user)
-                .userId(user.getId())
                 .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
         return walletRepository.save(wallet);
     }
@@ -94,12 +91,13 @@ public class WalletService {
     }
 
     private WalletDTO convertToDTO(Wallet wallet) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         return WalletDTO.builder()
                 .id(wallet.getId())
                 .name(wallet.getName())
                 .currency(wallet.getCurrency())
                 .symbol(wallet.getSymbol())
-                .balance(wallet.getBalance() != null ? wallet.getBalance().doubleValue() : 0.0)
+                .balance(wallet.getBalance())
                 .address(wallet.getAddress())
                 .build();
     }

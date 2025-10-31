@@ -4,6 +4,7 @@ package com.cryptowallet.service;
 import com.cryptowallet.dto.*;
 import com.cryptowallet.entity.Transaction;
 import com.cryptowallet.entity.Wallet;
+import com.cryptowallet.entity.User;
 import com.cryptowallet.repository.TransactionRepository;
 import com.cryptowallet.repository.WalletRepository;
 import com.cryptowallet.repository.UserRepository;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.math.BigDecimal;
 
 @Service
 public class TransactionService {
@@ -35,8 +35,8 @@ public class TransactionService {
     }
 
     public TransactionDTO sendTransaction(String userId, SendTransactionRequest request) {
-    userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new RuntimeException("User not found"));
 
         Wallet wallet = walletRepository.findById(request.getFromWalletId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
@@ -45,12 +45,11 @@ public class TransactionService {
             throw new RuntimeException("Unauthorized: Wallet does not belong to user");
         }
 
-        BigDecimal amount = BigDecimal.valueOf(request.getAmount());
-        if (wallet.getBalance().compareTo(amount) < 0) {
+        if (wallet.getBalance() < request.getAmount()) {
             throw new RuntimeException("Insufficient balance");
         }
 
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (request.getAmount() <= 0) {
             throw new RuntimeException("Amount must be greater than 0");
         }
 
@@ -65,7 +64,7 @@ public class TransactionService {
                 .currency(wallet.getSymbol())
                 .build();
 
-    wallet.setBalance(wallet.getBalance().subtract(amount));
+        wallet.setBalance(wallet.getBalance() - request.getAmount());
         walletRepository.save(wallet);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
