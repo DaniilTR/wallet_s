@@ -55,7 +55,7 @@ public class AuthService {
         User newUser = userRepository.save(user);
         walletService.createDefaultWallets(newUser);
 
-        String jwt = jwtUtil.generateToken(newUser);
+        String jwt = jwtUtil.generateTokenForSubject(newUser.getId());
         return new AuthResponse(jwt);
     }
 
@@ -72,7 +72,7 @@ public class AuthService {
             throw new BadCredentialsException("Invalid password");
         }
 
-        String jwt = jwtUtil.generateToken(user);
+        String jwt = jwtUtil.generateTokenForSubject(user.getId());
         return new AuthResponse(jwt);
     }
 }

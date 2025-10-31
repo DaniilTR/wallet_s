@@ -1,34 +1,28 @@
 package com.cryptowallet.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "transactions")
+@Document(collection = "transactions")
 public class Transaction {
     @Id
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "wallet_id", nullable = false)
+    @DBRef(lazy = true)
     private Wallet wallet;
 
-    @Column(nullable = false)
     private String type;
 
-    @Column(nullable = false)
     private Double amount;
 
-    @Column(nullable = false)
     private String toAddress;
 
-    @Column(nullable = false)
     private String status;
 
-    @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    @Column(nullable = false)
     private String currency;
 
     public Transaction() {

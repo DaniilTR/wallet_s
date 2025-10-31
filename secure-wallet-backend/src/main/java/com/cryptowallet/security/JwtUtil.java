@@ -54,6 +54,12 @@ public class JwtUtil {
         return createToken(claims, userDetails.getUsername());
     }
 
+    // Генерация токена с произвольным subject (например, userId)
+    public String generateTokenForSubject(String subject) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, subject);
+    }
+
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)

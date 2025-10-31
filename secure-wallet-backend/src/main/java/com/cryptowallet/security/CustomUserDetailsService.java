@@ -19,9 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.cryptowallet.entity.User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
+    public UserDetails loadUserByUsername(String subject) throws UsernameNotFoundException {
+        // subject = userId, т.к. мы кладём id в JWT subject
+        com.cryptowallet.entity.User user = userRepository.findById(subject)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found by id: " + subject));
+        // username в контексте безопасности будет равен userId
+        return new org.springframework.security.core.userdetails.User(user.getId(), user.getPassword(), new ArrayList<>());
     }
 }

@@ -1,38 +1,35 @@
 package com.cryptowallet.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Table(name = "wallets")
+@Document(collection = "wallets")
 public class Wallet {
     @Id
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @DBRef(lazy = true)
     private User user;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String currency;
 
-    @Column(nullable = false)
     private String symbol;
 
-    @Column(nullable = false)
     private Double balance;
 
-    @Column(nullable = false, unique = true)
+    @Indexed(unique = true)
     private String address;
 
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
+    @Transient
     private List<Transaction> transactions;
 
     // Приватный конструктор для использования билдером
