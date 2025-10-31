@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
+import 'bsc_service.dart';
 
 class WalletService {
   static final WalletService _instance = WalletService._internal();
@@ -16,88 +17,90 @@ class WalletService {
   late List<Transaction> _transactions;
 
   Future<void> initialize() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    _wallets = [
-      Wallet(
-        id: '1',
-        name: 'My Bitcoin',
-        currency: 'Bitcoin',
-        symbol: 'BTC',
-        balance: 0.5432,
-        address: '1A1z7agoat2FYAC...xyz',
-        iconUrl: 'btc',
-        color: const Color(0xFFF7931A),
-      ),
-      Wallet(
-        id: '2',
-        name: 'Ethereum Wallet',
-        currency: 'Ethereum',
-        symbol: 'ETH',
-        balance: 2.1547,
-        address: '0x742d35Cc6634C0532925a3b844Bc4e7595f...abc',
-        iconUrl: 'eth',
-        color: const Color(0xFF627EEA),
-      ),
-      Wallet(
-        id: '3',
-        name: 'Stables',
-        currency: 'USDT',
-        symbol: 'USDT',
-        balance: 5000.0,
-        address: '0x000000000000000000000000...def',
-        iconUrl: 'usdt',
-        color: const Color(0xFF26A17B),
-      ),
-    ];
+    // Инициализируем BSC сервис.
+    // Он создаёт/подхватывает локальный приватный ключ из secure storage
+    // и вычисляет из него EVM-адрес. Этот адрес один и тот же для
+    // нативного BNB и для токена на BSC Testnet.
+    final bsc = BscService();
+    try {
+      await bsc.init();
+    } catch (_) {
+      // Идем дальше; кошелек будет без ончейн-обновления, но UI не упадёт
+    }
 
-    _transactions = [
-      Transaction(
-        id: 'tx_1',
-        type: 'send',
-        amount: 0.05,
-        address: '1A1z7agoat2FYAC...xyz',
-        status: 'completed',
-        timestamp: DateTime.now().subtract(const Duration(days: 1)),
-        currency: 'BTC',
-      ),
-      Transaction(
-        id: 'tx_2',
-        type: 'receive',
-        amount: 0.1234,
-        address: '1Lbz...abc',
-        status: 'completed',
-        timestamp: DateTime.now().subtract(const Duration(days: 2)),
-        currency: 'BTC',
-      ),
-      Transaction(
-        id: 'tx_3',
-        type: 'send',
-        amount: 1.5,
-        address: '0x742d...def',
-        status: 'completed',
-        timestamp: DateTime.now().subtract(const Duration(hours: 12)),
-        currency: 'ETH',
-      ),
-      Transaction(
-        id: 'tx_4',
-        type: 'receive',
-        amount: 500.0,
-        address: '0x000...ghi',
-        status: 'pending',
-        timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
-        currency: 'USDT',
-      ),
-      Transaction(
-        id: 'tx_5',
-        type: 'send',
-        amount: 2500.0,
-        address: '0x111...jkl',
-        status: 'completed',
-        timestamp: DateTime.now().subtract(const Duration(days: 5)),
-        currency: 'USDT',
-      ),
-    ];
+    // Создаем список кошельков (можно оставить моковые как примеры)
+    _wallets = [];
+
+    // Добавляем кошелек токена в BSC Testnet (адрес берём из bsc.getAddressHex())
+    try {
+      final address = await bsc.getAddressHex();
+      final balance = await bsc.getTokenBalance();
+      _wallets.add(
+        Wallet(
+          id: 'bsc_token',
+          name: 'BSC Testnet Token',
+          currency: bsc.symbol,
+          symbol: bsc.symbol,
+          balance: balance,
+          address: address,
+          iconUrl: 'bsc',
+          color: const Color(0xFFF3BA2F), // BNB жёлтый
+        ),
+      );
+    } catch (_) {
+      // Если не смогли получить баланс — добавим кошелек с нулевым балансом
+      final address = await bsc.getAddressHex();
+      _wallets.add(
+        Wallet(
+          id: 'bsc_token',
+          name: 'BSC Testnet Token',
+          currency: bsc.symbol,
+          symbol: bsc.symbol,
+          balance: 0.0,
+          address: address,
+          iconUrl: 'bsc',
+          color: const Color(0xFFF3BA2F),
+        ),
+      );
+    }
+
+    // Добавляем кошелек нативного BNB (для отображения баланса газа)
+    // Адрес — тот же самый, что и для токена (один приватный ключ).
+    try {
+      final address = await bsc.getAddressHex();
+      final bnbBalance = await bsc.getNativeBalanceBNB();
+      _wallets.insert(
+        0,
+        Wallet(
+          id: 'bsc_native',
+          name: 'BNB Testnet',
+          currency: 'Binance Coin',
+          symbol: 'BNB',
+          balance: bnbBalance,
+          address: address,
+          iconUrl: 'bnb',
+          color: const Color(0xFFF3BA2F),
+        ),
+      );
+    } catch (_) {
+      final address = await bsc.getAddressHex();
+      _wallets.insert(
+        0,
+        Wallet(
+          id: 'bsc_native',
+          name: 'BNB Testnet',
+          currency: 'Binance Coin',
+          symbol: 'BNB',
+          balance: 0.0,
+          address: address,
+          iconUrl: 'bnb',
+          color: const Color(0xFFF3BA2F),
+        ),
+      );
+    }
+
+    // Начинаем без истории — будем добавлять реальные отправки
+    _transactions = [];
   }
 
   Future<List<Wallet>> getWallets() async {
@@ -150,25 +153,104 @@ class WalletService {
     required String toAddress,
     required double amount,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    
     final wallet = _wallets.firstWhere((w) => w.id == fromWalletId);
-    final newTransaction = Transaction(
-      id: 'tx_${DateTime.now().millisecondsSinceEpoch}',
-      type: 'send',
-      amount: amount,
-      address: toAddress,
-      status: 'completed',
-      timestamp: DateTime.now(),
-      currency: wallet.symbol,
+
+    // Если это наш BSC токен — отправляем через web3
+    final bsc = BscService();
+    if (wallet.id == 'bsc_token') {
+      try {
+        final txHash = await bsc.sendToken(toAddress: toAddress, amount: amount);
+        _transactions.insert(
+          0,
+          Transaction(
+            id: txHash,
+            type: 'send',
+            amount: amount,
+            address: toAddress,
+            status: 'submitted',
+            timestamp: DateTime.now(),
+            currency: wallet.symbol,
+          ),
+        );
+
+        // Обновим баланс после отправки
+        final newBalance = await bsc.getTokenBalance();
+        final idx = _wallets.indexWhere((w) => w.id == 'bsc_token');
+        if (idx >= 0) {
+          _wallets[idx] = Wallet(
+            id: _wallets[idx].id,
+            name: _wallets[idx].name,
+            currency: _wallets[idx].currency,
+            symbol: _wallets[idx].symbol,
+            balance: newBalance,
+            address: _wallets[idx].address,
+            iconUrl: _wallets[idx].iconUrl,
+            color: _wallets[idx].color,
+          );
+        }
+        return true;
+      } catch (e) {
+        throw Exception('Не удалось отправить транзакцию: $e');
+      }
+    }
+
+    // Отправка нативного BNB
+    if (wallet.id == 'bsc_native') {
+      try {
+        final txHash = await bsc.sendNativeBNB(toAddress: toAddress, amount: amount);
+        _transactions.insert(
+          0,
+          Transaction(
+            id: txHash,
+            type: 'send',
+            amount: amount,
+            address: toAddress,
+            status: 'submitted',
+            timestamp: DateTime.now(),
+            currency: wallet.symbol,
+          ),
+        );
+
+        // Обновим баланс BNB
+        final newBalance = await bsc.getNativeBalanceBNB();
+        final idx = _wallets.indexWhere((w) => w.id == 'bsc_native');
+        if (idx >= 0) {
+          _wallets[idx] = Wallet(
+            id: _wallets[idx].id,
+            name: _wallets[idx].name,
+            currency: _wallets[idx].currency,
+            symbol: _wallets[idx].symbol,
+            balance: newBalance,
+            address: _wallets[idx].address,
+            iconUrl: _wallets[idx].iconUrl,
+            color: _wallets[idx].color,
+          );
+        }
+        return true;
+      } catch (e) {
+        throw Exception('Не удалось отправить BNB: $e');
+      }
+    }
+
+    // Иначе — мок транзакция
+    await Future.delayed(const Duration(milliseconds: 500));
+    _transactions.insert(
+      0,
+      Transaction(
+        id: 'tx_${DateTime.now().millisecondsSinceEpoch}',
+        type: 'send',
+        amount: amount,
+        address: toAddress,
+        status: 'completed',
+        timestamp: DateTime.now(),
+        currency: wallet.symbol,
+      ),
     );
-    
-    _transactions.insert(0, newTransaction);
     return true;
   }
 
   double getTotalBalance() {
-    return _wallets.fold(0, (sum, w) => sum + (w.balance * 1000));
+    return _wallets.fold(0, (sum, w) => sum + (w.balance));
   }
 
   String getShortAddress(String address) {

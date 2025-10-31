@@ -21,7 +21,12 @@ class _SendScreenState extends State<SendScreen> {
   @override
   void initState() {
     super.initState();
-    _walletsFuture = _walletService.getWallets();
+    _walletsFuture = _walletService.getWallets().then((ws) {
+      // По умолчанию выбираем BSC токен, если он есть
+      final bsc = ws.where((w) => w.id == 'bsc_token').toList();
+      if (bsc.isNotEmpty) selectedWallet = bsc.first;
+      return ws;
+    });
   }
 
   @override
@@ -251,6 +256,9 @@ class _SendScreenState extends State<SendScreen> {
   }
 
   Widget _buildNetworkFeeSection() {
+  final isBscToken = selectedWallet?.id == 'bsc_token';
+  final isBscNative = selectedWallet?.id == 'bsc_native';
+  final isBsc = isBscToken || isBscNative;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -263,12 +271,11 @@ class _SendScreenState extends State<SendScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Text('Network Fee', style: Theme.of(context).textTheme.bodyMedium),
               Text(
-                'Network Fee',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                '0.0001 ${selectedWallet?.symbol ?? 'BTC'}',
+                isBsc
+                    ? (isBscNative ? '~0.0003 BNB (Testnet)' : '~0.0005 BNB (Testnet)')
+                    : '0.0001 ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -284,13 +291,22 @@ class _SendScreenState extends State<SendScreen> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               Text(
-                '${(double.tryParse(amountController.text) ?? 0) + 0.0001} ${selectedWallet?.symbol ?? 'BTC'}',
+                isBsc
+                    ? '${(double.tryParse(amountController.text) ?? 0)} ${selectedWallet?.symbol ?? ''} + fee in BNB'
+                    : '${(double.tryParse(amountController.text) ?? 0) + 0.0001} ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: const Color(0xFF0098EA),
                 ),
               ),
             ],
           ),
+          if (isBsc) ...[
+            const SizedBox(height: 12),
+            Text(
+              'Для отправки в BSC Testnet на кошельке должны быть тестовые BNB для оплаты газа. ',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+            ),
+          ]
         ],
       ),
     );
