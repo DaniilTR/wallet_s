@@ -69,11 +69,12 @@ public class TransactionService {
             throw new RuntimeException("Insufficient balance");
         }
 
-        Transaction transaction = Transaction.builder()
+    Transaction transaction = Transaction.builder()
                 .id(UUID.randomUUID().toString())
                 .wallet(wallet)
+        .walletId(wallet.getId())
                 .type("send")
-                .amount(request.getAmount())
+        .amount(amount)
                 .toAddress(request.getToAddress())
                 // Пока отправка ончейн не реализована, помечаем завершённой для демонстрации
                 .status("completed")
@@ -90,7 +91,7 @@ public class TransactionService {
         return TransactionDTO.builder()
                 .id(tx.getId())
                 .type(tx.getType())
-                .amount(tx.getAmount())
+                .amount(tx.getAmount() != null ? tx.getAmount().doubleValue() : 0.0)
                 .address(tx.getToAddress())
                 .status(tx.getStatus())
                 .timestamp(tx.getTimestamp().format(formatter))

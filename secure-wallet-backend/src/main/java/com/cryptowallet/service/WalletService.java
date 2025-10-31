@@ -162,7 +162,7 @@ public class WalletService {
         return TransactionDTO.builder()
                 .id(tx.getId())
                 .type(tx.getType())
-                .amount(tx.getAmount())
+                .amount(tx.getAmount() != null ? tx.getAmount().doubleValue() : 0.0)
                 .address(tx.getToAddress())
                 .status(tx.getStatus())
                 .timestamp(tx.getTimestamp().format(formatter))
