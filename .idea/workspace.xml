@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/main_dart.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/secure_wallet.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/security/JwtTokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/WalletService.java" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/src/main/java/com/cryptowallet/service/WalletService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-    </list>
+    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,10 +61,10 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "test",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Wallet/App",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>

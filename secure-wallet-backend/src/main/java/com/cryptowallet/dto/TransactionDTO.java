@@ -9,17 +9,19 @@ public class TransactionDTO {
     private String timestamp;
     private String currency;
 
+    // Пустой конструктор для десериализации
     public TransactionDTO() {
     }
 
-    public TransactionDTO(String id, String type, Double amount, String address, String status, String timestamp, String currency) {
-        this.id = id;
-        this.type = type;
-        this.amount = amount;
-        this.address = address;
-        this.status = status;
-        this.timestamp = timestamp;
-        this.currency = currency;
+    // Приватный конструктор для использования билдером
+    private TransactionDTO(TransactionDTOBuilder builder) {
+        this.id = builder.id;
+        this.type = builder.type;
+        this.amount = builder.amount;
+        this.address = builder.address;
+        this.status = builder.status;
+        this.timestamp = builder.timestamp;
+        this.currency = builder.currency;
     }
 
     public static TransactionDTOBuilder builder() {
@@ -53,7 +55,7 @@ public class TransactionDTO {
         public TransactionDTOBuilder currency(String currency) { this.currency = currency; return this; }
 
         public TransactionDTO build() {
-            return new TransactionDTO(id, type, amount, address, status, timestamp, currency);
+            return new TransactionDTO(this);
         }
     }
 }

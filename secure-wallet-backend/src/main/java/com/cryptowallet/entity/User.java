@@ -1,35 +1,39 @@
 package com.cryptowallet.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Table(name = "users")
+@Document(collection = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @Indexed(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private Integer age;
 
-    @Column(nullable = false)
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @Transient
     private List<Wallet> wallets;
 
     public User() {
@@ -43,10 +47,6 @@ public class User implements UserDetails {
         this.age = age;
         this.createdAt = createdAt;
         this.wallets = wallets;
-    }
-
-    public static UserBuilder builder() {
-        return new UserBuilder();
     }
 
     @Override
@@ -124,63 +124,19 @@ public class User implements UserDetails {
         this.createdAt = createdAt;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public List<Wallet> getWallets() {
         return wallets;
     }
 
     public void setWallets(List<Wallet> wallets) {
         this.wallets = wallets;
-    }
-
-    public static class UserBuilder {
-        private String id;
-        private String username;
-        private String email;
-        private String password;
-        private Integer age;
-        private LocalDateTime createdAt;
-        private List<Wallet> wallets;
-
-        UserBuilder() {
-        }
-
-        public UserBuilder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public UserBuilder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public UserBuilder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public UserBuilder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public UserBuilder age(Integer age) {
-            this.age = age;
-            return this;
-        }
-
-        public UserBuilder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public UserBuilder wallets(List<Wallet> wallets) {
-            this.wallets = wallets;
-            return this;
-        }
-
-        public User build() {
-            return new User(id, username, email, password, age, createdAt, wallets);
-        }
     }
 }
