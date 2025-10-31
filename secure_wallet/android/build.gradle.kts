@@ -5,19 +5,14 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
+// Не форсируем вычисление Provider на этапе конфигурации и используем set() вместо value()
+val newBuildDir = rootProject.layout.buildDirectory.dir("../../build")
+rootProject.layout.buildDirectory.set(newBuildDir)
 
 subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
+    layout.buildDirectory.set(newBuildDir.map { it.dir(project.name) })
 }
-subprojects {
-    project.evaluationDependsOn(":app")
-}
+// Removed project.evaluationDependsOn(":app") to prevent cyclic dependencies.
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
