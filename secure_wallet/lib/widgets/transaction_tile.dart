@@ -9,9 +9,8 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isSent = transaction.isSent;
-    final color = isSent ? Colors.red.shade600 : Colors.green.shade600;
+  final isSent = transaction.isSent;
+  final color = isSent ? Colors.red.shade600 : Colors.green.shade600;
     final icon = isSent ? Icons.arrow_upward : Icons.arrow_downward;
     final label = isSent ? 'Sent' : 'Received';
 
@@ -20,7 +19,7 @@ class TransactionTile extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withAlpha(26),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 20),
@@ -67,7 +66,7 @@ class TransactionTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: _getStatusColor(transaction.status).withOpacity(0.1),
+                color: _getStatusColor(transaction.status).withAlpha(26),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(

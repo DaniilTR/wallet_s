@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
 import '../services/wallet_service.dart';
@@ -129,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: 'Send',
                     onPressed: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => SendScreen()),
+                      MaterialPageRoute(builder: (_) => const SendScreen()),
                     ),
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:developer' show log;
 import '../models/auth.dart';
 
 class AuthService {
@@ -79,7 +80,7 @@ class AuthService {
 
       // Явное указание на успешный вход при статусе 200
       if (response.statusCode == 200) {
-        print('[AuthService] Login successful with status 200. Body: ${response.body}');
+  log('[AuthService] Login successful with status 200. Body: ${response.body}');
         try {
           final data = json.decode(response.body);
           final user = User.fromJson(data);
@@ -87,21 +88,21 @@ class AuthService {
           _token = user.token;
           return AuthResponse(success: true, message: 'Login successful', user: user);
         } catch (e) {
-          print('[AuthService] Failed to parse user data from response: $e');
+          log('[AuthService] Failed to parse user data from response: $e');
           // Все равно возвращаем успех, чтобы обеспечить перенаправление
           return AuthResponse(success: true, message: 'Login successful, but user data parsing failed');
         }
       }
 
       // Обработка всех остальных кодов состояния
-      print('[AuthService] Login failed with status code: ${response.statusCode}');
+  log('[AuthService] Login failed with status code: ${response.statusCode}');
       return AuthResponse(
         success: false,
         message: 'Login failed',
         error: 'Status code: ${response.statusCode}',
       );
     } catch (e) {
-      print('[AuthService] An exception occurred during login: $e');
+  log('[AuthService] An exception occurred during login: $e');
       return AuthResponse(
         success: false,
         message: 'An error occurred during login',
@@ -120,7 +121,7 @@ class AuthService {
         },
       );
     } catch (e) {
-      print('Logout error: $e');
+      log('Logout error: $e');
     } finally {
       _currentUser = null;
       _token = null;

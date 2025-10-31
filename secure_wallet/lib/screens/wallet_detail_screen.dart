@@ -67,8 +67,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            widget.wallet.color.withOpacity(0.8),
-            widget.wallet.color.withOpacity(0.4),
+            widget.wallet.color.withAlpha(204),
+            widget.wallet.color.withAlpha(102),
           ],
         ),
       ),
@@ -99,7 +99,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
             Text(
               '\$${(widget.wallet.balance * 50000).toStringAsFixed(2)}',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withAlpha(204),
                 fontSize: 16,
               ),
             ),

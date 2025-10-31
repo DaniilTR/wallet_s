@@ -43,8 +43,8 @@ class _AuthScreenState extends State<AuthScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              const Color(0xFF0098EA).withOpacity(0.1),
-              const Color(0xFF627EEA).withOpacity(0.1),
+              const Color(0xFF0098EA).withAlpha(26),
+              const Color(0xFF627EEA).withAlpha(26),
             ],
           ),
         ),
@@ -393,9 +393,9 @@ class _AuthScreenState extends State<AuthScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _selectedAge >= 18
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+    color: _selectedAge >= 18
+      ? Colors.green.withAlpha(26)
+      : Colors.red.withAlpha(26),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: _selectedAge >= 18 ? Colors.green : Colors.red,

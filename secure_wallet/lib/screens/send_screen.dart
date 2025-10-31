@@ -100,16 +100,16 @@ class _SendScreenState extends State<SendScreen> {
                         width: isSelected ? 2 : 1,
                       ),
                       borderRadius: BorderRadius.circular(12),
-                      color: isSelected
-                          ? const Color(0xFF0098EA).withOpacity(0.05)
-                          : Colors.transparent,
+            color: isSelected
+              ? const Color(0xFF0098EA).withAlpha(13)
+              : Colors.transparent,
                     ),
                     child: Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: wallet.color.withOpacity(0.1),
+                            color: wallet.color.withAlpha(26),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
@@ -233,10 +233,10 @@ class _SendScreenState extends State<SendScreen> {
                 onTap: selectedWallet != null
                     ? () => setState(() => amountController.text = selectedWallet!.balance.toString())
                     : null,
-                child: Text(
+                child: const Text(
                   'Max',
                   style: TextStyle(
-                    color: const Color(0xFF0098EA),
+                    color: Color(0xFF0098EA),
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
