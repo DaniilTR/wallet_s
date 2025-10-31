@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Transaction$TransactionBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Transaction$TransactionBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Transaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Transaction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet$WalletBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet$WalletBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/entity/Wallet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/repository/TransactionRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/repository/TransactionRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/repository/UserRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/repository/WalletRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/repository/WalletRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/security/CustomUserDetailsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/security/CustomUserDetailsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/security/JwtUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/security/JwtUtil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/classes/com/cryptowallet/service/AuthService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/secure-wallet-backend/target/secure-wallet-backend-1.0.0.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
-    </list>
+    <list default="true" id="fe0a1dfa-885d-4986-aef6-27ee20992d3e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,7 +64,7 @@
     "git-widget-placeholder": "test",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Wallet/App",
-    "settings.editor.selected.configurable": "com.github.copilot.settings.general.GeneralConfigurable",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>

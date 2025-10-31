@@ -23,7 +23,6 @@ com\cryptowallet\dto\UserDTO$UserDTOBuilder.class
 com\cryptowallet\security\SecurityConfig.class
 com\cryptowallet\dto\TransactionDTO$TransactionDTOBuilder.class
 com\cryptowallet\dto\SendTransactionRequest.class
-com\cryptowallet\service\TransactionService.class
 com\cryptowallet\dto\AuthResponse.class
 com\cryptowallet\security\JwtAuthenticationFilter.class
 com\cryptowallet\dto\TransactionDTO.class
