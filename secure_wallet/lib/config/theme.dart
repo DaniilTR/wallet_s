@@ -47,7 +47,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primary, // Цвет фона кнопки
           foregroundColor: Colors.white, // Цвет текста кнопки
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Отступы
+          padding: const EdgeInsets.symmetric(
+              horizontal: 24, vertical: 12), // Отступы
           // Форма кнопки
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // Скругление углов
@@ -60,7 +61,8 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: primary, width: 1.5), // Граница кнопки
           foregroundColor: primary, // Цвет текста кнопки
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Отступы
+          padding: const EdgeInsets.symmetric(
+              horizontal: 24, vertical: 12), // Отступы
           // Форма кнопки
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // Скругление углов

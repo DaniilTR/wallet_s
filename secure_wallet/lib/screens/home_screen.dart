@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
 import '../services/wallet_service.dart';
@@ -81,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.settings, size: 20, color: Colors.grey.shade700),
+              child:
+                  Icon(Icons.settings, size: 20, color: Colors.grey.shade700),
             ),
           ),
         ),
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
               'Total Balance',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey.shade600,
-              ),
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: 'Send',
                     onPressed: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => SendScreen()),
+                      MaterialPageRoute(builder: (_) => const SendScreen()),
                     ),
                   ),
                 ),
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selectedCurrency,
+                initialValue: selectedCurrency,
                 decoration: const InputDecoration(
                   labelText: 'Currency',
                   border: OutlineInputBorder(),

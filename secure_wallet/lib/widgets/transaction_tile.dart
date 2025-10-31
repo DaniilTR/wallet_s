@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 
@@ -9,18 +9,20 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isSent = transaction.isSent;
     final color = isSent ? Colors.red.shade600 : Colors.green.shade600;
     final icon = isSent ? Icons.arrow_upward : Icons.arrow_downward;
     final label = isSent ? 'Sent' : 'Received';
+
+    final statusText = _getStatusText(transaction.status);
+    final statusColor = _getStatusColor(transaction.status);
 
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withAlpha((0.1 * 255).round()),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 20),
@@ -38,20 +40,21 @@ class TransactionTile extends StatelessWidget {
               Text(
                 _formatAddress(transaction.address),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+                      color: Colors.grey.shade600,
+                    ),
               ),
               const SizedBox(height: 2),
               Text(
                 DateFormat('MMM d, yyyy • HH:mm').format(transaction.timestamp),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade500,
-                  fontSize: 11,
-                ),
+                      color: Colors.grey.shade500,
+                      fontSize: 11,
+                    ),
               ),
             ],
           ),
         ),
+        const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -67,15 +70,15 @@ class TransactionTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: _getStatusColor(transaction.status).withOpacity(0.1),
+                color: statusColor.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                _getStatusText(transaction.status),
+                statusText,
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
-                  color: _getStatusColor(transaction.status),
+                  color: statusColor,
                 ),
               ),
             ),

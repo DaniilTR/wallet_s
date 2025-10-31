@@ -15,8 +15,8 @@ class WalletCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            wallet.color.withOpacity(0.8),
-            wallet.color.withOpacity(0.4),
+            wallet.color.withAlpha((0.8 * 255).round()),
+            wallet.color.withAlpha((0.4 * 255).round()),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -32,7 +32,7 @@ class WalletCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withAlpha((0.2 * 255).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -44,7 +44,8 @@ class WalletCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Icon(Icons.more_vert, color: Colors.white.withOpacity(0.7)),
+                Icon(Icons.more_vert,
+                    color: Colors.white.withAlpha((0.7 * 255).round())),
               ],
             ),
             const SizedBox(height: 24),
@@ -77,7 +78,7 @@ class WalletCard extends StatelessWidget {
                       Text(
                         'Address',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withAlpha((0.6 * 255).round()),
                           fontSize: 12,
                         ),
                       ),
@@ -96,9 +97,10 @@ class WalletCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withAlpha((0.2 * 255).round()),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(

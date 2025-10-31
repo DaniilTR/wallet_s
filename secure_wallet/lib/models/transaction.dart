@@ -1,4 +1,4 @@
-// lib/models/transaction.dart
+﻿// lib/models/transaction.dart
 class Transaction {
   final String id;
   final String type; // 'send' или 'receive'

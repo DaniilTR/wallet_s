@@ -29,6 +29,7 @@ com\cryptowallet\security\JwtAuthenticationFilter.class
 com\cryptowallet\dto\TransactionDTO.class
 com\cryptowallet\controller\TransactionController.class
 com\cryptowallet\exception\BadCredentialsException.class
+com\cryptowallet\config\MongoConfig.class
 com\cryptowallet\entity\Transaction$TransactionBuilder.class
 com\cryptowallet\dto\RegisterRequest.class
 com\cryptowallet\exception\EmailAlreadyExistsException.class

@@ -17,7 +17,7 @@ class WalletService {
 
   Future<void> initialize() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     _wallets = [
       Wallet(
         id: '1',
@@ -129,7 +129,7 @@ class WalletService {
     required String currency,
   }) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final newWallet = Wallet(
       id: DateTime.now().toString(),
       name: name,
@@ -140,7 +140,7 @@ class WalletService {
       iconUrl: currency.toLowerCase(),
       color: const Color(0xFF627EEA),
     );
-    
+
     _wallets.add(newWallet);
     return true;
   }
@@ -151,7 +151,7 @@ class WalletService {
     required double amount,
   }) async {
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     final wallet = _wallets.firstWhere((w) => w.id == fromWalletId);
     final newTransaction = Transaction(
       id: 'tx_${DateTime.now().millisecondsSinceEpoch}',
@@ -162,7 +162,7 @@ class WalletService {
       timestamp: DateTime.now(),
       currency: wallet.symbol,
     );
-    
+
     _transactions.insert(0, newTransaction);
     return true;
   }

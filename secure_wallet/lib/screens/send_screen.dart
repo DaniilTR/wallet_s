@@ -101,7 +101,8 @@ class _SendScreenState extends State<SendScreen> {
                       ),
                       borderRadius: BorderRadius.circular(12),
                       color: isSelected
-                          ? const Color(0xFF0098EA).withOpacity(0.05)
+                          ? const Color(0xFF0098EA)
+                              .withAlpha((0.05 * 255).round())
                           : Colors.transparent,
                     ),
                     child: Row(
@@ -109,7 +110,7 @@ class _SendScreenState extends State<SendScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: wallet.color.withOpacity(0.1),
+                            color: wallet.color.withAlpha((0.1 * 255).round()),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
@@ -211,7 +212,8 @@ class _SendScreenState extends State<SendScreen> {
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             hintText: '0.00',
-            prefixText: selectedWallet != null ? '${selectedWallet!.symbol} ' : null,
+            prefixText:
+                selectedWallet != null ? '${selectedWallet!.symbol} ' : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -231,12 +233,13 @@ class _SendScreenState extends State<SendScreen> {
               padding: const EdgeInsets.all(12),
               child: GestureDetector(
                 onTap: selectedWallet != null
-                    ? () => setState(() => amountController.text = selectedWallet!.balance.toString())
+                    ? () => setState(() => amountController.text =
+                        selectedWallet!.balance.toString())
                     : null,
-                child: Text(
+                child: const Text(
                   'Max',
                   style: TextStyle(
-                    color: const Color(0xFF0098EA),
+                    color: Color(0xFF0098EA),
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -270,8 +273,8 @@ class _SendScreenState extends State<SendScreen> {
               Text(
                 '0.0001 ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
           ),
@@ -286,8 +289,8 @@ class _SendScreenState extends State<SendScreen> {
               Text(
                 '${(double.tryParse(amountController.text) ?? 0) + 0.0001} ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: const Color(0xFF0098EA),
-                ),
+                      color: const Color(0xFF0098EA),
+                    ),
               ),
             ],
           ),

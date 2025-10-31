@@ -21,7 +21,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _transactionsFuture = _walletService.getWalletTransactions(widget.wallet.id);
+    _transactionsFuture =
+        _walletService.getWalletTransactions(widget.wallet.id);
   }
 
   @override
@@ -67,8 +68,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            widget.wallet.color.withOpacity(0.8),
-            widget.wallet.color.withOpacity(0.4),
+            widget.wallet.color.withAlpha((0.8 * 255).round()),
+            widget.wallet.color.withAlpha((0.4 * 255).round()),
           ],
         ),
       ),
@@ -99,7 +100,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
             Text(
               '\$${(widget.wallet.balance * 50000).toStringAsFixed(2)}',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withAlpha((0.8 * 255).round()),
                 fontSize: 16,
               ),
             ),
@@ -212,8 +213,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           Text(
             'Tap to copy address',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey.shade600,
-            ),
+                  color: Colors.grey.shade600,
+                ),
           ),
         ],
       ),
@@ -245,8 +246,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
                     child: Text(
                       'No transactions',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
+                            color: Colors.grey.shade600,
+                          ),
                     ),
                   ),
                 );
