@@ -124,14 +124,19 @@ class TokenService {
   /// Convert token amount from human-readable to raw units
   BigInt toTokenUnits(double amount, int decimals) {
     final multiplier = BigInt.from(10).pow(decimals);
-    final amountInUnits = (amount * multiplier.toDouble()).round();
-    return BigInt.from(amountInUnits);
+    // Use string conversion to maintain precision for large numbers
+    final amountString = amount.toStringAsFixed(decimals);
+    final parts = amountString.split('.');
+    final wholePart = BigInt.parse(parts[0]);
+    final fractionalPart = parts.length > 1 ? parts[1].padRight(decimals, '0') : '0' * decimals;
+    final fractionBigInt = BigInt.parse(fractionalPart.substring(0, decimals));
+    return wholePart * multiplier + fractionBigInt;
   }
   
   /// Convert token amount from raw units to human-readable
   double fromTokenUnits(BigInt amount, int decimals) {
     final divisor = BigInt.from(10).pow(decimals);
-    return amount / divisor;
+    return amount.toDouble() / divisor.toDouble();
   }
   
   /// Transfer tokens
