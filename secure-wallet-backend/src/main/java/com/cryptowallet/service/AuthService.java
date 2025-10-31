@@ -48,11 +48,13 @@ public class AuthService {
         }
 
         User user = new User();
+        user.setId(java.util.UUID.randomUUID().toString());
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setAge(registerRequest.getAge());
         user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
 
     User newUser = userRepository.save(user);
     logger.info("Registration successful: username={}, id={}", newUser.getUsername(), newUser.getId());
