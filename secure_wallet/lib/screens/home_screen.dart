@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selectedCurrency,
+                initialValue: selectedCurrency,
                 decoration: const InputDecoration(
                   labelText: 'Currency',
                   border: OutlineInputBorder(),
