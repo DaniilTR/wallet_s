@@ -40,6 +40,15 @@ public class WalletController {
                 .body(walletService.createWallet(userId, request));
     }
 
+    @PostMapping("/import")
+    public ResponseEntity<WalletDTO> importWallet(
+        @RequestBody ImportWalletRequest request,
+        Authentication authentication) {
+    String userId = authentication.getName();
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(walletService.importWallet(userId, request));
+    }
+
     @GetMapping("/{id}/transactions")
     public ResponseEntity<List<TransactionDTO>> getWalletTransactions(
             @PathVariable String id,

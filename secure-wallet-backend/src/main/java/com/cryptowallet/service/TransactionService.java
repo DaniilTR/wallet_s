@@ -19,13 +19,16 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
+    private final BscService bscService;
 
     public TransactionService(TransactionRepository transactionRepository,
                               WalletRepository walletRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              BscService bscService) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
         this.userRepository = userRepository;
+        this.bscService = bscService;
     }
 
     public List<TransactionDTO> getUserTransactions(String userId) {
@@ -35,8 +38,8 @@ public class TransactionService {
     }
 
     public TransactionDTO sendTransaction(String userId, SendTransactionRequest request) {
-    userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("User not found"));
+        userRepository.findById(userId).orElseThrow(
+                () -> new RuntimeException("User not found"));
 
         Wallet wallet = walletRepository.findById(request.getFromWalletId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
@@ -46,12 +49,24 @@ public class TransactionService {
         }
 
         BigDecimal amount = BigDecimal.valueOf(request.getAmount());
-        if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
-        }
-
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Amount must be greater than 0");
+        }
+
+        // Проверяем баланс ончейн (а не локальный wallet.balance)
+        BigDecimal onchainBalance;
+        try {
+            if (wallet.getSymbol() != null && wallet.getSymbol().equalsIgnoreCase("BNB")) {
+                onchainBalance = bscService.getNativeBalanceBNB(wallet.getAddress());
+            } else {
+                onchainBalance = bscService.getTokenBalance(wallet.getAddress());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch on-chain balance: " + e.getMessage());
+        }
+
+        if (onchainBalance.compareTo(amount) < 0) {
+            throw new RuntimeException("Insufficient balance");
         }
 
         Transaction transaction = Transaction.builder()
@@ -60,13 +75,11 @@ public class TransactionService {
                 .type("send")
                 .amount(request.getAmount())
                 .toAddress(request.getToAddress())
+                // Пока отправка ончейн не реализована, помечаем завершённой для демонстрации
                 .status("completed")
                 .timestamp(LocalDateTime.now())
                 .currency(wallet.getSymbol())
                 .build();
-
-    wallet.setBalance(wallet.getBalance().subtract(amount));
-        walletRepository.save(wallet);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
         return convertToDTO(savedTransaction);

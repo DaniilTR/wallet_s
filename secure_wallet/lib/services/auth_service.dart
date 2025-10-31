@@ -79,18 +79,14 @@ class AuthService {
 
       // Явное указание на успешный вход при статусе 200
       if (response.statusCode == 200) {
-        print('[AuthService] Login successful with status 200. Body: ${response.body}');
-        try {
-          final data = json.decode(response.body);
-          final user = User.fromJson(data);
-          _currentUser = user;
-          _token = user.token;
-          return AuthResponse(success: true, message: 'Login successful', user: user);
-        } catch (e) {
-          print('[AuthService] Failed to parse user data from response: $e');
-          // Все равно возвращаем успех, чтобы обеспечить перенаправление
-          return AuthResponse(success: true, message: 'Login successful, but user data parsing failed');
+        final data = json.decode(response.body);
+        final auth = AuthResponse.fromJson(data);
+        if (auth.success && auth.user != null) {
+          _currentUser = auth.user;
+          _token = auth.user!.token;
+          return auth;
         }
+        return AuthResponse(success: false, message: 'Invalid auth response');
       }
 
       // Обработка всех остальных кодов состояния

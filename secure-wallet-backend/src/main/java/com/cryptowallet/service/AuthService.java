@@ -7,7 +7,8 @@ import com.cryptowallet.exception.UserNotFoundException;
 import com.cryptowallet.exception.UsernameAlreadyExistsException;
 import com.cryptowallet.dto.LoginRequest;
 import com.cryptowallet.payload.request.RegisterRequest;
-import com.cryptowallet.payload.response.AuthResponse;
+import com.cryptowallet.dto.UserDTO;
+import com.cryptowallet.dto.AuthResponse;
 import com.cryptowallet.repository.UserRepository;
 import com.cryptowallet.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,8 +61,17 @@ public class AuthService {
     logger.info("Registration successful: username={}, id={}", newUser.getUsername(), newUser.getId());
         walletService.createDefaultWallets(newUser);
 
-        String jwt = jwtUtil.generateTokenForSubject(newUser.getId());
-        return new AuthResponse(jwt);
+    String jwt = jwtUtil.generateTokenForSubject(newUser.getId());
+
+    UserDTO userDto = UserDTO.builder()
+        .id(newUser.getId())
+        .username(newUser.getUsername())
+        .email(newUser.getEmail())
+        .age(newUser.getAge())
+        .createdAt(newUser.getCreatedAt() != null ? newUser.getCreatedAt().toString() : null)
+        .token(jwt)
+        .build();
+    return AuthResponse.success("Registration successful", userDto);
     }
 
     public AuthResponse loginUser(LoginRequest loginRequest) {
@@ -78,8 +88,21 @@ public class AuthService {
             throw new BadCredentialsException("Invalid password");
         }
 
-        String jwt = jwtUtil.generateTokenForSubject(user.getId());
-        logger.info("Login successful: username={}, id={}", user.getUsername(), user.getId());
-        return new AuthResponse(jwt);
+    String jwt = jwtUtil.generateTokenForSubject(user.getId());
+    logger.info("Login successful: username={}, id={}", user.getUsername(), user.getId());
+
+    // Если у пользователя нет кошельков — создать дефолтные (BNB + T1PS)
+    walletService.ensureDefaultWallets(user);
+
+    UserDTO userDto = UserDTO.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .age(user.getAge())
+        .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
+        .token(jwt)
+        .build();
+
+    return AuthResponse.success("Login successful", userDto);
     }
 }

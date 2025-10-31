@@ -21,27 +21,37 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+    private final BscService bscService;
 
     public WalletService(WalletRepository walletRepository,
                          UserRepository userRepository,
-                         TransactionRepository transactionRepository) {
+                         TransactionRepository transactionRepository,
+                         BscService bscService) {
         this.walletRepository = walletRepository;
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
+        this.bscService = bscService;
     }
 
     public void createDefaultWallets(User user) {
-        // Создание USDT кошелька
-        createWalletInternal(user, "My USDT", "USDT", "USDT", BigDecimal.ZERO);
+        // Создание кошельков для BSC Testnet
+        // 1) Нативный BNB (для газа)
+        createWalletInternal(user, "My BNB", "BSC Testnet", "BNB", BigDecimal.ZERO);
+        // 2) Токен T1PS (BEP-20)
+        createWalletInternal(user, "My T1PS", "BSC Testnet", "T1PS", BigDecimal.ZERO);
+    }
 
-        // Создание ETH кошелька
-        createWalletInternal(user, "My Ethereum", "Ethereum", "ETH", BigDecimal.ZERO);
+    // Гарантировать наличие хотя бы одного набора дефолтных кошельков
+    public void ensureDefaultWallets(User user) {
+        if (walletRepository.findByUser(user).isEmpty()) {
+            createDefaultWallets(user);
+        }
     }
 
     public List<WalletDTO> getUserWallets(String userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        return walletRepository.findByUser(user).stream()
-                .map(this::convertToDTO)
+    return walletRepository.findByUser(user).stream()
+        .map(this::enrichAndConvert)
                 .collect(Collectors.toList());
     }
 
@@ -50,6 +60,25 @@ public class WalletService {
         Wallet wallet = walletRepository.findByIdAndUser(walletId, user)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         return convertToDTO(wallet);
+    }
+
+    // Импорт существующего EVM-кошелька по адресу (привязка к пользователю)
+    public WalletDTO importWallet(String userId, com.cryptowallet.dto.ImportWalletRequest request) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Wallet wallet = Wallet.builder()
+                .id(UUID.randomUUID().toString())
+                .name(request.getName())
+                .currency(request.getCurrency())
+                .symbol(request.getSymbol())
+                .balance(BigDecimal.ZERO)
+                .address(request.getAddress())
+                .user(user)
+                .userId(user.getId())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        wallet = walletRepository.save(wallet);
+        return enrichAndConvert(wallet);
     }
 
     public WalletDTO createWallet(String userId, CreateWalletRequest request) {
@@ -100,6 +129,30 @@ public class WalletService {
                 .currency(wallet.getCurrency())
                 .symbol(wallet.getSymbol())
                 .balance(wallet.getBalance() != null ? wallet.getBalance().doubleValue() : 0.0)
+                .address(wallet.getAddress())
+                .build();
+    }
+
+    private WalletDTO enrichAndConvert(Wallet wallet) {
+        // Обогащаем балансами из BSC для известных символов
+        double balance = 0.0;
+        try {
+            if (wallet.getSymbol() != null) {
+                if (wallet.getSymbol().equalsIgnoreCase("BNB")) {
+                    balance = bscService.getNativeBalanceBNB(wallet.getAddress()).doubleValue();
+                } else {
+                    // для нашего токена T1PS
+                    balance = bscService.getTokenBalance(wallet.getAddress()).doubleValue();
+                }
+            }
+        } catch (Exception ignored) { }
+
+        return WalletDTO.builder()
+                .id(wallet.getId())
+                .name(wallet.getName())
+                .currency(wallet.getCurrency())
+                .symbol(wallet.getSymbol())
+                .balance(balance)
                 .address(wallet.getAddress())
                 .build();
     }

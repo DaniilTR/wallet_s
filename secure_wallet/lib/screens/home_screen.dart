@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
 import '../services/wallet_service.dart';
+import '../services/auth_service.dart';
 import '../widgets/wallet_card.dart';
 import '../widgets/transaction_tile.dart';
 import 'wallet_detail_screen.dart';
@@ -70,7 +71,23 @@ class _HomeScreenState extends State<HomeScreen> {
       elevation: 0,
       pinned: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: const Text('Secure Wallet'),
+      title: Row(
+        children: [
+          const Text('Secure Wallet'),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'acct: ' + (AuthService().currentUser?.username ?? '—'),
+              style: TextStyle(color: Colors.grey.shade800, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16),
@@ -239,12 +256,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showCreateWalletDialog() {
     final nameController = TextEditingController();
-    String selectedCurrency = 'BTC';
+  String selectedCurrency = 'BNB';
+  final addressController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Create New Wallet'),
+  title: const Text('Add/Import Wallet'),
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -264,14 +282,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: OutlineInputBorder(),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'BTC', child: Text('Bitcoin')),
-                  DropdownMenuItem(value: 'ETH', child: Text('Ethereum')),
-                  DropdownMenuItem(value: 'USDT', child: Text('USDT')),
-                  DropdownMenuItem(value: 'USDC', child: Text('USDC')),
+                  DropdownMenuItem(value: 'BNB', child: Text('BNB (BSC Testnet)')),
+                  DropdownMenuItem(value: 'T1PS', child: Text('T1PS Token (BEP-20)')),
                 ],
                 onChanged: (value) {
-                  setState(() => selectedCurrency = value ?? 'BTC');
+                  setState(() => selectedCurrency = value ?? 'BNB');
                 },
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Wallet Address (0x...)',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ],
           ),
@@ -282,13 +306,16 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              _walletService.createWallet(
-                name: nameController.text,
+            onPressed: () async {
+              final ok = await _walletService.createWallet(
+                name: nameController.text.trim().isEmpty ? selectedCurrency : nameController.text.trim(),
                 currency: selectedCurrency,
+                address: addressController.text.trim(),
               );
-              Navigator.pop(context);
-              setState(() {});
+              if (mounted) {
+                Navigator.pop(context);
+                if (ok) setState(() {});
+              }
             },
             child: const Text('Create'),
           ),

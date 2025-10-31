@@ -5,13 +5,22 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "wallets")
+@CompoundIndexes({
+    // Разрешаем один и тот же address использовать для разных символов и/или пользователей,
+    // но запрещаем дубликаты в рамках одной пары (userId,address,symbol)
+    @CompoundIndex(name = "user_address_symbol_unique", def = "{ 'userId': 1, 'address': 1, 'symbol': 1 }", unique = true)
+})
 public class Wallet {
     @Id
     private String id;
@@ -28,10 +37,12 @@ public class Wallet {
 
     private String symbol;
 
-    // Decimal128 в Mongo — используем BigDecimal в Java
+    // Decimal128 в Mongo — явно указываем тип для поля
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal balance;
 
-    @Indexed(unique = true)
+    // Индекс без уникальности: уникальность обеспечивается составным индексом выше
+    @Indexed
     private String address;
 
     @CreatedDate
