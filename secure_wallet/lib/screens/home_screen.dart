@@ -3,10 +3,13 @@ import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
 import '../services/wallet_service.dart';
+import '../services/crypto_wallet_service.dart';
 import '../widgets/wallet_card.dart';
 import '../widgets/transaction_tile.dart';
 import 'wallet_detail_screen.dart';
 import 'send_screen.dart';
+import 'bsc_wallet_setup_screen.dart';
+import 'bsc_wallet_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final WalletService _walletService = WalletService();
+  final CryptoWalletService _cryptoWalletService = CryptoWalletService();
   late Future<void> _initFuture;
 
   @override
@@ -182,6 +186,74 @@ class _HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
+            // BSC Wallet Card
+            GestureDetector(
+              onTap: _handleBSCWalletTap,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFF0B90B), Color(0xFFFFD700)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.black,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'BSC Testnet Wallet',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'BNB Smart Chain',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.7),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black.withOpacity(0.5),
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -204,6 +276,24 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  Future<void> _handleBSCWalletTap() async {
+    final hasWallet = await _cryptoWalletService.hasWallet();
+    
+    if (!mounted) return;
+    
+    if (hasWallet) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const BSCWalletHomeScreen()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const BSCWalletSetupScreen()),
+      );
+    }
   }
 
   Widget _buildTransactionsSection() {
