@@ -1,0 +1,17 @@
+# Backend build outputs
+secure-wallet-backend/target/
+secure-wallet-backend/.gradle/
+secure-wallet-backend/build/
+
+# Flutter/Dart build outputs
+secure_wallet/build/
+secure_wallet/.dart_tool/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
