@@ -86,7 +86,7 @@ class _BSCWalletHomeScreenState extends State<BSCWalletHomeScreen> {
       
       setState(() {});
     } catch (e) {
-      print('Error loading balances: $e');
+      debugPrint('Error loading balances: $e');
     }
   }
   

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:web3dart/web3dart.dart';
 import '../config/bsc_config.dart';
@@ -73,7 +74,7 @@ class TokenService {
       );
       _tokenDecimals = (decimalsResult.first as BigInt).toInt();
     } catch (e) {
-      print('Error loading token metadata: $e');
+      debugPrint('Error loading token metadata: $e');
       // Use defaults if metadata loading fails
       _tokenName = 'Unknown Token';
       _tokenSymbol = 'TOKEN';

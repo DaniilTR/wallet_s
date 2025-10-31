@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -65,7 +66,7 @@ class CryptoWalletService {
     try {
       return EthPrivateKey.fromHex(privateKeyHex);
     } catch (e) {
-      print('Error loading wallet: $e');
+      debugPrint('Error loading wallet: $e');
       return null;
     }
   }

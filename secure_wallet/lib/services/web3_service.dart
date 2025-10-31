@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
 import '../config/bsc_config.dart';
