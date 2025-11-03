@@ -106,7 +106,7 @@ class _SendScreenState extends State<SendScreen> {
                       ),
                       borderRadius: BorderRadius.circular(12),
                       color: isSelected
-                          ? const Color(0xFF0098EA).withOpacity(0.05)
+                          ? const Color(0xFF0098EA)
                           : Colors.transparent,
                     ),
                     child: Row(
@@ -114,7 +114,7 @@ class _SendScreenState extends State<SendScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: wallet.color.withOpacity(0.1),
+                            color: wallet.color,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
@@ -216,7 +216,8 @@ class _SendScreenState extends State<SendScreen> {
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             hintText: '0.00',
-            prefixText: selectedWallet != null ? '${selectedWallet!.symbol} ' : null,
+            prefixText:
+                selectedWallet != null ? '${selectedWallet!.symbol} ' : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -236,7 +237,8 @@ class _SendScreenState extends State<SendScreen> {
               padding: const EdgeInsets.all(12),
               child: GestureDetector(
                 onTap: selectedWallet != null
-                    ? () => setState(() => amountController.text = selectedWallet!.balance.toString())
+                    ? () => setState(() => amountController.text =
+                        selectedWallet!.balance.toString())
                     : null,
                 child: Text(
                   'Max',
@@ -256,9 +258,9 @@ class _SendScreenState extends State<SendScreen> {
   }
 
   Widget _buildNetworkFeeSection() {
-  final isBscToken = selectedWallet?.id == 'bsc_token';
-  final isBscNative = selectedWallet?.id == 'bsc_native';
-  final isBsc = isBscToken || isBscNative;
+    final isBscToken = selectedWallet?.id == 'bsc_token';
+    final isBscNative = selectedWallet?.id == 'bsc_native';
+    final isBsc = isBscToken || isBscNative;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -271,14 +273,17 @@ class _SendScreenState extends State<SendScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Network Fee', style: Theme.of(context).textTheme.bodyMedium),
+              Text('Network Fee',
+                  style: Theme.of(context).textTheme.bodyMedium),
               Text(
                 isBsc
-                    ? (isBscNative ? '~0.0003 BNB (Testnet)' : '~0.0005 BNB (Testnet)')
+                    ? (isBscNative
+                        ? '~0.0003 BNB (Testnet)'
+                        : '~0.0005 BNB (Testnet)')
                     : '0.0001 ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
           ),
@@ -295,8 +300,8 @@ class _SendScreenState extends State<SendScreen> {
                     ? '${(double.tryParse(amountController.text) ?? 0)} ${selectedWallet?.symbol ?? ''} + fee in BNB'
                     : '${(double.tryParse(amountController.text) ?? 0) + 0.0001} ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: const Color(0xFF0098EA),
-                ),
+                      color: const Color(0xFF0098EA),
+                    ),
               ),
             ],
           ),
@@ -304,7 +309,10 @@ class _SendScreenState extends State<SendScreen> {
             const SizedBox(height: 12),
             Text(
               'Для отправки в BSC Testnet на кошельке должны быть тестовые BNB для оплаты газа. ',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Colors.grey[700]),
             ),
           ]
         ],

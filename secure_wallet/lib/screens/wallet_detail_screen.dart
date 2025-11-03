@@ -4,6 +4,7 @@ import '../models/wallet.dart';
 import '../models/transaction.dart';
 import '../services/wallet_service.dart';
 import '../widgets/transaction_tile.dart';
+import 'send_screen.dart';
 
 class WalletDetailScreen extends StatefulWidget {
   final Wallet wallet;
@@ -21,7 +22,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _transactionsFuture = _walletService.getWalletTransactions(widget.wallet.id);
+    _transactionsFuture =
+        _walletService.getWalletTransactions(widget.wallet.id);
   }
 
   @override
@@ -115,7 +117,12 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
         _buildActionIconButton(
           icon: Icons.send,
           label: 'Send',
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const SendScreen(),
+            ),
+          ),
         ),
         const SizedBox(width: 12),
         _buildActionIconButton(
@@ -192,9 +199,10 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
                     child: SelectableText(
                       widget.wallet.address,
                       style: const TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         fontFamily: 'monospace',
                         fontWeight: FontWeight.w500,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -212,8 +220,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           Text(
             'Tap to copy address',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey.shade600,
-            ),
+                  color: Colors.grey.shade600,
+                ),
           ),
         ],
       ),
@@ -245,8 +253,8 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
                     child: Text(
                       'No transactions',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
+                            color: Colors.grey.shade600,
+                          ),
                     ),
                   ),
                 );
