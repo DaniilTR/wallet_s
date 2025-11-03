@@ -98,7 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.settings, size: 20, color: Colors.grey.shade700),
+              child:
+                  Icon(Icons.settings, size: 20, color: Colors.grey.shade700),
             ),
           ),
         ),
@@ -122,11 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
               'Total Balance',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey.shade600,
-              ),
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
-              '\$${(totalBalance * 50000).toStringAsFixed(2)}',
+              // Форматируем валюту через intl
+              NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                  .format(totalBalance * 50000),
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(height: 12),
@@ -256,13 +259,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showCreateWalletDialog() {
     final nameController = TextEditingController();
-  String selectedCurrency = 'BNB';
-  final addressController = TextEditingController();
+    String selectedCurrency = 'BNB';
+    final addressController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-  title: const Text('Add/Import Wallet'),
+        title: const Text('Add/Import Wallet'),
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -282,8 +285,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: OutlineInputBorder(),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'BNB', child: Text('BNB (BSC Testnet)')),
-                  DropdownMenuItem(value: 'T1PS', child: Text('T1PS Token (BEP-20)')),
+                  DropdownMenuItem(
+                      value: 'BNB', child: Text('BNB (BSC Testnet)')),
+                  DropdownMenuItem(
+                      value: 'T1PS', child: Text('T1PS Token (BEP-20)')),
                 ],
                 onChanged: (value) {
                   setState(() => selectedCurrency = value ?? 'BNB');
@@ -308,7 +313,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ElevatedButton(
             onPressed: () async {
               final ok = await _walletService.createWallet(
-                name: nameController.text.trim().isEmpty ? selectedCurrency : nameController.text.trim(),
+                name: nameController.text.trim().isEmpty
+                    ? selectedCurrency
+                    : nameController.text.trim(),
                 currency: selectedCurrency,
                 address: addressController.text.trim(),
               );

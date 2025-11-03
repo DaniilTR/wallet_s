@@ -49,22 +49,23 @@ public class WalletService {
     }
 
     public List<WalletDTO> getUserWallets(String userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-    return walletRepository.findByUser(user).stream()
-        .map(this::enrichAndConvert)
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
+        return walletRepository.findByUser(user).stream()
+                .map(this::enrichAndConvert)
                 .collect(Collectors.toList());
     }
 
     public WalletDTO getWallet(String walletId, String userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = walletRepository.findByIdAndUser(walletId, user)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         return convertToDTO(wallet);
     }
 
     // Импорт существующего EVM-кошелька по адресу (привязка к пользователю)
+    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
     public WalletDTO importWallet(String userId, com.cryptowallet.dto.ImportWalletRequest request) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = Wallet.builder()
                 .id(UUID.randomUUID().toString())
                 .name(request.getName())
@@ -77,17 +78,18 @@ public class WalletService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        wallet = walletRepository.save(wallet);
+    walletRepository.save(Objects.requireNonNull(wallet, "wallet must not be null"));
         return enrichAndConvert(wallet);
     }
 
     public WalletDTO createWallet(String userId, CreateWalletRequest request) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = createWalletInternal(user, request.getName(),
                 request.getCurrency(), request.getCurrency(), BigDecimal.ZERO);
         return convertToDTO(wallet);
     }
 
+    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
     private Wallet createWalletInternal(User user, String name, String currency, String symbol, BigDecimal balance) {
         Wallet wallet = Wallet.builder()
                 .id(UUID.randomUUID().toString())
@@ -101,11 +103,12 @@ public class WalletService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        return walletRepository.save(wallet);
+    walletRepository.save(Objects.requireNonNull(wallet, "wallet must not be null"));
+    return wallet;
     }
 
     public List<TransactionDTO> getWalletTransactions(String walletId, String userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = walletRepository.findByIdAndUser(walletId, user)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
