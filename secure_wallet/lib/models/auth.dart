@@ -43,12 +43,14 @@ class AuthResponse {
   final String message;
   final User? user;
   final String? error;
+  final int? statusCode;
 
   AuthResponse({
     required this.success,
     required this.message,
     this.user,
     this.error,
+    this.statusCode,
   });
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class AuthResponse {
       message: json['message'] ?? '',
       user: json['user'] != null ? User.fromJson(json['user']) : null,
       error: json['error'],
+      statusCode: json['statusCode'] ?? json['status'] ?? json['code'],
     );
   }
 }
