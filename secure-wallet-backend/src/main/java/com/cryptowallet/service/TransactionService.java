@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class TransactionService {
@@ -38,17 +39,23 @@ public class TransactionService {
     }
 
     public TransactionDTO sendTransaction(String userId, SendTransactionRequest request) {
-        userRepository.findById(userId).orElseThrow(
-                () -> new RuntimeException("User not found"));
+    // явная валидация входных параметров
+    Objects.requireNonNull(request, "request must not be null");
+    userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow(
+        () -> new RuntimeException("User not found"));
 
-        Wallet wallet = walletRepository.findById(request.getFromWalletId())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+    String fromWalletId = Objects.requireNonNull(request.getFromWalletId(), "fromWalletId must not be null");
+    String toAddress = Objects.requireNonNull(request.getToAddress(), "toAddress must not be null");
+    Double amt = Objects.requireNonNull(request.getAmount(), "amount must not be null");
+
+    Wallet wallet = walletRepository.findById(fromWalletId)
+        .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         if (!wallet.getUser().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized: Wallet does not belong to user");
         }
 
-        BigDecimal amount = BigDecimal.valueOf(request.getAmount());
+    BigDecimal amount = BigDecimal.valueOf(amt);
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Amount must be greater than 0");
         }
@@ -75,13 +82,14 @@ public class TransactionService {
         .walletId(wallet.getId())
                 .type("send")
         .amount(amount)
-                .toAddress(request.getToAddress())
+        .toAddress(toAddress)
                 // Пока отправка ончейн не реализована, помечаем завершённой для демонстрации
                 .status("completed")
                 .timestamp(LocalDateTime.now())
                 .currency(wallet.getSymbol())
                 .build();
 
+        Objects.requireNonNull(transaction, "transaction must not be null");
         Transaction savedTransaction = transactionRepository.save(transaction);
         return convertToDTO(savedTransaction);
     }

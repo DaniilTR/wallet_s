@@ -38,3 +38,4 @@ app.*.map.json
 /macos
 /linux
 /test
+/ios
