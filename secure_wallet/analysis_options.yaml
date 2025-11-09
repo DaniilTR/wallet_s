@@ -1,7 +1,20 @@
 
 include: package:flutter_lints/flutter.yaml
 
-linter:
+# Дополнительные исключения для анализатора — ускоряют и убирают шум от генерируемых/временных файлов
+analyzer:
+  exclude:
+    - build/**
+    - .dart_tool/**
 
+# Собственные правила линтера поверх рекомендованных flutter_lints
+linter:
   rules:
+    # полезные общие правила
+    prefer_final_locals: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    always_use_package_imports: true
+    avoid_print: true
+    # можно отключать отдельные шумные правила по мере необходимости
 

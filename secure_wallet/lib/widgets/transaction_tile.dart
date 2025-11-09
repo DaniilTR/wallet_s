@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/transaction.dart';
+import 'package:secure_wallet/models/transaction.dart';
 
 class TransactionTile extends StatelessWidget {
   final Transaction transaction;
@@ -9,8 +9,8 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final isSent = transaction.isSent;
-  final color = isSent ? Colors.red.shade600 : Colors.green.shade600;
+    final isSent = transaction.isSent;
+    final color = isSent ? Colors.red.shade600 : Colors.green.shade600;
     final icon = isSent ? Icons.arrow_upward : Icons.arrow_downward;
     final label = isSent ? 'Sent' : 'Received';
 
@@ -37,16 +37,16 @@ class TransactionTile extends StatelessWidget {
               Text(
                 _formatAddress(transaction.address),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+                      color: Colors.grey.shade600,
+                    ),
               ),
               const SizedBox(height: 2),
               Text(
                 DateFormat('MMM d, yyyy • HH:mm').format(transaction.timestamp),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade500,
-                  fontSize: 11,
-                ),
+                      color: Colors.grey.shade500,
+                      fontSize: 11,
+                    ),
               ),
             ],
           ),

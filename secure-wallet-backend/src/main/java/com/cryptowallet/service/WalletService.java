@@ -21,44 +21,75 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+    private final BscService bscService;
 
     public WalletService(WalletRepository walletRepository,
                          UserRepository userRepository,
-                         TransactionRepository transactionRepository) {
+                         TransactionRepository transactionRepository,
+                         BscService bscService) {
         this.walletRepository = walletRepository;
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
+        this.bscService = bscService;
     }
 
     public void createDefaultWallets(User user) {
-        // Создание USDT кошелька
-        createWalletInternal(user, "My USDT", "USDT", "USDT", BigDecimal.ZERO);
+        // Создание кошельков для BSC Testnet
+        // 1) Нативный BNB (для газа)
+        createWalletInternal(user, "My BNB", "BSC Testnet", "BNB", BigDecimal.ZERO);
+        // 2) Токен T1PS (BEP-20)
+        createWalletInternal(user, "My T1PS", "BSC Testnet", "T1PS", BigDecimal.ZERO);
+    }
 
-        // Создание ETH кошелька
-        createWalletInternal(user, "My Ethereum", "Ethereum", "ETH", BigDecimal.ZERO);
+    // Гарантировать наличие хотя бы одного набора дефолтных кошельков
+    public void ensureDefaultWallets(User user) {
+        if (walletRepository.findByUser(user).isEmpty()) {
+            createDefaultWallets(user);
+        }
     }
 
     public List<WalletDTO> getUserWallets(String userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         return walletRepository.findByUser(user).stream()
-                .map(this::convertToDTO)
+                .map(this::enrichAndConvert)
                 .collect(Collectors.toList());
     }
 
     public WalletDTO getWallet(String walletId, String userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = walletRepository.findByIdAndUser(walletId, user)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         return convertToDTO(wallet);
     }
 
+    // Импорт существующего EVM-кошелька по адресу (привязка к пользователю)
+    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
+    public WalletDTO importWallet(String userId, com.cryptowallet.dto.ImportWalletRequest request) {
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
+        Wallet wallet = Wallet.builder()
+                .id(UUID.randomUUID().toString())
+                .name(request.getName())
+                .currency(request.getCurrency())
+                .symbol(request.getSymbol())
+                .balance(BigDecimal.ZERO)
+                .address(request.getAddress())
+                .user(user)
+                .userId(user.getId())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    walletRepository.save(Objects.requireNonNull(wallet, "wallet must not be null"));
+        return enrichAndConvert(wallet);
+    }
+
     public WalletDTO createWallet(String userId, CreateWalletRequest request) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = createWalletInternal(user, request.getName(),
                 request.getCurrency(), request.getCurrency(), BigDecimal.ZERO);
         return convertToDTO(wallet);
     }
 
+    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
     private Wallet createWalletInternal(User user, String name, String currency, String symbol, BigDecimal balance) {
         Wallet wallet = Wallet.builder()
                 .id(UUID.randomUUID().toString())
@@ -72,11 +103,12 @@ public class WalletService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        return walletRepository.save(wallet);
+    walletRepository.save(Objects.requireNonNull(wallet, "wallet must not be null"));
+    return wallet;
     }
 
     public List<TransactionDTO> getWalletTransactions(String walletId, String userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow();
         Wallet wallet = walletRepository.findByIdAndUser(walletId, user)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
@@ -104,12 +136,36 @@ public class WalletService {
                 .build();
     }
 
+    private WalletDTO enrichAndConvert(Wallet wallet) {
+        // Обогащаем балансами из BSC для известных символов
+        double balance = 0.0;
+        try {
+            if (wallet.getSymbol() != null) {
+                if (wallet.getSymbol().equalsIgnoreCase("BNB")) {
+                    balance = bscService.getNativeBalanceBNB(wallet.getAddress()).doubleValue();
+                } else {
+                    // для нашего токена T1PS
+                    balance = bscService.getTokenBalance(wallet.getAddress()).doubleValue();
+                }
+            }
+        } catch (Exception ignored) { }
+
+        return WalletDTO.builder()
+                .id(wallet.getId())
+                .name(wallet.getName())
+                .currency(wallet.getCurrency())
+                .symbol(wallet.getSymbol())
+                .balance(balance)
+                .address(wallet.getAddress())
+                .build();
+    }
+
     private TransactionDTO convertTransactionToDTO(Transaction tx) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         return TransactionDTO.builder()
                 .id(tx.getId())
                 .type(tx.getType())
-                .amount(tx.getAmount())
+                .amount(tx.getAmount() != null ? tx.getAmount().doubleValue() : 0.0)
                 .address(tx.getToAddress())
                 .status(tx.getStatus())
                 .timestamp(tx.getTimestamp().format(formatter))

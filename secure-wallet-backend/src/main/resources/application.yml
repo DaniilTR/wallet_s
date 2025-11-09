@@ -2,5 +2,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://secure:wallet_1945@localhost:27017/secure_wallet?authSource=secure_wallet
+      auto-index-creation: true
 jwt:
   secret: your-super-secret-key-that-is-long-and-secure

@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer' show log;
-import '../models/auth.dart';
+import 'package:secure_wallet/models/auth.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();
@@ -172,17 +172,26 @@ class AuthService {
 
       // Явное указание на успешный вход при статусе 200
       if (response.statusCode == 200) {
-  log('[AuthService] Login successful with status 200. Body: ${response.body}');
+        log('[AuthService] Login successful with status 200. Body: ${response.body}');
         try {
           final data = json.decode(response.body);
-          final user = User.fromJson(data);
-          _currentUser = user;
-          _token = user.token;
-          return AuthResponse(success: true, message: 'Login successful', user: user, statusCode: 200);
+          // Бэкенд возвращает { jwt: "..." }. Сохраним токен и продолжим.
+          if (data is Map<String, dynamic> && data['jwt'] is String) {
+            _token = data['jwt'] as String;
+          }
+          // Попытка распарсить пользователя (если когда-нибудь сервер начнёт отдавать юзера)
+          try {
+            final user = User.fromJson(data);
+            _currentUser ??= user;
+            _token ??= user.token;
+          } catch (_) {
+            // Игнорируем — для навигации достаточно токена
+          }
+          return AuthResponse(success: true, message: 'Login successful', user: _currentUser, statusCode: 200);
         } catch (e) {
-          log('[AuthService] Failed to parse user data from response: $e');
-          // Все равно возвращаем успех, чтобы обеспечить перенаправление
-          return AuthResponse(success: true, message: 'Login successful, but user data parsing failed', statusCode: 200);
+          log('[AuthService] Failed to parse login response: $e');
+          // Возвращаем успех для навигации, даже если парсинг не удался
+          return AuthResponse(success: true, message: 'Login successful', statusCode: 200);
         }
       }
 

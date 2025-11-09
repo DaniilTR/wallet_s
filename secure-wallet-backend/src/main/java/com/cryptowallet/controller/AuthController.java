@@ -6,7 +6,7 @@ import com.cryptowallet.exception.UserNotFoundException;
 import com.cryptowallet.exception.UsernameAlreadyExistsException;
 import com.cryptowallet.dto.LoginRequest; // Исправленный импорт
 import com.cryptowallet.payload.request.RegisterRequest;
-import com.cryptowallet.payload.response.AuthResponse;
+import com.cryptowallet.dto.AuthResponse;
 import com.cryptowallet.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

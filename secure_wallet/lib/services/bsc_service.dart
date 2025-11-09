@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:web3dart/web3dart.dart';
 
-import '../config/bsc_config.dart';
+import 'package:secure_wallet/config/bsc_config.dart';
 
 /// Сервис работы с сетью BSC Testnet и локальным EVM-кошельком.
 ///
@@ -52,7 +52,7 @@ class BscService {
     }
 
     // Подготовка контракта токена
-    final contractAddr = EthereumAddress.fromHex(BscConfig.tokenContractAddress);
+  final contractAddr = EthereumAddress.fromHex(BscConfig.tokenContractAddress);
     _tokenContract = DeployedContract(
       ContractAbi.fromJson(BscConfig.erc20Abi, 'BEP20'),
       contractAddr,
@@ -94,9 +94,9 @@ class BscService {
     final address = await getOrCreateAddress();
     final balance = await _client!.getBalance(address);
     // Перевод из wei в BNB
-    final inWei = balance.getInWei;
-    final denom = BigInt.from(10).pow(18);
-    return inWei.toDouble() / denom.toDouble();
+  final inWei = balance.getInWei;
+  final denom = BigInt.from(10).pow(18);
+  return inWei.toDouble() / denom.toDouble();
   }
 
   /// Создать или получить EVM-адрес кошелька.
@@ -140,9 +140,9 @@ class BscService {
       function: _balanceOfFn!,
       params: [address],
     );
-    final raw = result.first as BigInt;
-    final denom = BigInt.from(10).pow(_decimals);
-    return raw.toDouble() / denom.toDouble();
+  final raw = result.first as BigInt;
+  final denom = BigInt.from(10).pow(_decimals);
+  return raw.toDouble() / denom.toDouble();
   }
 
   /// Отправить amount токена на toAddress. Возвращает txHash.
@@ -160,7 +160,7 @@ class BscService {
       throw Exception('Кошелек не создан. Сначала создайте кошелек.');
     }
     final creds = EthPrivateKey.fromHex(pkHex);
-    final to = EthereumAddress.fromHex(toAddress);
+  final to = EthereumAddress.fromHex(toAddress);
 
     final denom = BigInt.from(10).pow(_decimals);
     final value = BigInt.from((amount * denom.toDouble()).round());
@@ -200,13 +200,13 @@ class BscService {
     }
 
     final creds = EthPrivateKey.fromHex(pkHex);
-    final to = EthereumAddress.fromHex(toAddress);
+  final to = EthereumAddress.fromHex(toAddress);
 
     final valueWei = BigInt.from((amount * pow(10, 18)).round());
 
     final tx = Transaction(
       to: to,
-      value: EtherAmount.inWei(valueWei),
+  value: EtherAmount.inWei(valueWei),
       maxGas: gasLimit,
       gasPrice: gasPriceGwei != null
           ? EtherAmount.inWei(BigInt.from(gasPriceGwei) * BigInt.from(1000000000))

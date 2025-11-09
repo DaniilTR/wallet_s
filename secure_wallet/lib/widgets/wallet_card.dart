@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/wallet.dart';
-import '../services/wallet_service.dart';
+import 'package:secure_wallet/models/wallet.dart';
+import 'package:secure_wallet/services/wallet_service.dart';
 
 class WalletCard extends StatelessWidget {
   final Wallet wallet;
