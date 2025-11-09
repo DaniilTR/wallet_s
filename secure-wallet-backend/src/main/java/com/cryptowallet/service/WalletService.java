@@ -35,7 +35,7 @@ public class WalletService {
         createWalletInternal(user, "My USDT", "USDT", "USDT", BigDecimal.ZERO);
 
         // Создание ETH кошелька
-        createWalletInternal(user, "My Ethereum", "Ethereum", "ETH", BigDecimal.ZERO);
+        createWalletInternal(user, "My EDA", "EDA", "EDA", BigDecimal.ZERO);
     }
 
     public List<WalletDTO> getUserWallets(String userId) {
