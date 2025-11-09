@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BscService {
     private volatile Web3j web3j;
-    private static final int TOKEN_DECIMALS = 18; // фиксируем для упрощения
+    private static final int TOKEN_DECIMALS = 8; // фиксируем для упрощения
     // Можно вернуть символ при необходимости из конфига или контракта
 
     private Web3j client() {
@@ -53,7 +53,7 @@ public class BscService {
         try {
             EthGetBalance bal = client().ethGetBalance(addressHex, DefaultBlockParameterName.LATEST).send();
             BigInteger wei = bal.getBalance();
-            return new BigDecimal(wei).divide(new BigDecimal("1000000000000000000"));
+            return new BigDecimal(wei).divide(new BigDecimal("1"));
         } catch (Exception e) {
             throw new RuntimeException("Ошибка получения баланса BNB: " + e.getMessage(), e);
         }

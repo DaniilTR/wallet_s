@@ -37,8 +37,8 @@ public class WalletService {
         // Создание кошельков для BSC Testnet
         // 1) Нативный BNB (для газа)
         createWalletInternal(user, "My BNB", "BSC Testnet", "BNB", BigDecimal.ZERO);
-        // 2) Токен T1PS (BEP-20)
-        createWalletInternal(user, "My T1PS", "BSC Testnet", "T1PS", BigDecimal.ZERO);
+        // 2) Токен EDA (BEP-20)
+        createWalletInternal(user, "My EDA", "BSC Testnet", "EDA", BigDecimal.ZERO);
     }
 
     // Гарантировать наличие хотя бы одного набора дефолтных кошельков
