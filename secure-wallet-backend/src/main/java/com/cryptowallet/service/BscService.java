@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BscService {
     private volatile Web3j web3j;
-    private static final int TOKEN_DECIMALS = 18; // фиксируем для упрощения
+    private static final int TOKEN_DECIMALS = 8; // фиксируем для упрощения
     // Можно вернуть символ при необходимости из конфига или контракта
 
     private Web3j client() {

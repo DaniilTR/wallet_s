@@ -10,5 +10,5 @@ public class BscConfig {
     public static final int CHAIN_ID = 97;
 
     // Контракт токена BEP-20 из задачи
-    public static final String TOKEN_CONTRACT = "0xf9Db015ae3D2B413FcA691022c610422FFab4368";
+    public static final String TOKEN_CONTRACT = "0x9E282812a418dbc1b7239591Bdbe6641c9a66189";
 }
