@@ -9,6 +9,7 @@ import com.cryptowallet.dto.LoginRequest;
 import com.cryptowallet.payload.request.RegisterRequest;
 import com.cryptowallet.dto.UserDTO;
 import com.cryptowallet.dto.AuthResponse;
+import com.cryptowallet.dto.WalletDTO;
 import com.cryptowallet.repository.UserRepository;
 import com.cryptowallet.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,7 +60,9 @@ public class AuthService {
 
     User newUser = userRepository.save(user);
     logger.info("Registration successful: username={}, id={}", newUser.getUsername(), newUser.getId());
-        walletService.createDefaultWallets(newUser);
+    walletService.createDefaultWallets(newUser);
+    // Загружаем кошельки сразу после создания, чтобы вернуть клиенту реальные адреса
+    java.util.List<WalletDTO> wallets = walletService.getUserWallets(newUser.getId());
 
     String jwt = jwtUtil.generateTokenForSubject(newUser.getId());
 
@@ -71,7 +74,7 @@ public class AuthService {
         .createdAt(newUser.getCreatedAt() != null ? newUser.getCreatedAt().toString() : null)
         .token(jwt)
         .build();
-    return AuthResponse.success("Registration successful", userDto);
+    return AuthResponse.successWithWallets("Registration successful", userDto, wallets);
     }
 
     public AuthResponse loginUser(LoginRequest loginRequest) {
@@ -91,8 +94,9 @@ public class AuthService {
     String jwt = jwtUtil.generateTokenForSubject(user.getId());
     logger.info("Login successful: username={}, id={}", user.getUsername(), user.getId());
 
-    // Если у пользователя нет кошельков — создать дефолтные (BNB + T1PS)
+    // Если у пользователя нет кошельков — создаём дефолтные, затем читаем их
     walletService.ensureDefaultWallets(user);
+    java.util.List<WalletDTO> wallets = walletService.getUserWallets(user.getId());
 
     UserDTO userDto = UserDTO.builder()
         .id(user.getId())
@@ -103,6 +107,6 @@ public class AuthService {
         .token(jwt)
         .build();
 
-    return AuthResponse.success("Login successful", userDto);
+    return AuthResponse.successWithWallets("Login successful", userDto, wallets);
     }
 }

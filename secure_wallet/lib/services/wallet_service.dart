@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:secure_wallet/models/wallet.dart';
 import 'package:secure_wallet/models/transaction.dart';
 import 'package:secure_wallet/services/bsc_service.dart';
@@ -15,90 +15,34 @@ class WalletService {
   late List<Transaction> _transactions;
 
   Future<void> initialize() async {
-    // Инициализируем BSC сервис.
-    // Он создаёт/подхватывает локальный приватный ключ из secure storage
-    // и вычисляет из него EVM-адрес. Этот адрес один и тот же для
-    // нативного BNB и для токена на BSC Testnet.
-    final bsc = BscService();
-    try {
-      await bsc.init();
-    } catch (_) {
-      // Идем дальше; кошелек будет без ончейн-обновления, но UI не упадёт
-    }
-
-    // Создаем список кошельков (можно оставить моковые как примеры)
+    // Загружаем кошельки пользователя с бэкенда, используя Bearer-токен
+    final auth = AuthService();
     _wallets = [];
-
-    // Добавляем кошелек токена в BSC Testnet (адрес берём из bsc.getAddressHex())
-    try {
-      final address = await bsc.getAddressHex();
-      final balance = await bsc.getTokenBalance();
-      _wallets.add(
-        Wallet(
-          id: 'bsc_token',
-          name: 'BSC Testnet Token',
-          currency: bsc.symbol,
-          symbol: bsc.symbol,
-          balance: balance,
-          address: address,
-          iconUrl: 'bsc',
-          color: const Color(0xFFF3BA2F), // BNB жёлтый
-        ),
-      );
-    } catch (_) {
-      // Если не смогли получить баланс — добавим кошелек с нулевым балансом
-      final address = await bsc.getAddressHex();
-      _wallets.add(
-        Wallet(
-          id: 'bsc_token',
-          name: 'BSC Testnet Token',
-          currency: bsc.symbol,
-          symbol: bsc.symbol,
-          balance: 0.0,
-          address: address,
-          iconUrl: 'bsc',
-          color: const Color(0xFFF3BA2F),
-        ),
-      );
-    }
-
-    // Добавляем кошелек нативного BNB (для отображения баланса газа)
-    // Адрес — тот же самый, что и для токена (один приватный ключ).
-    try {
-      final address = await bsc.getAddressHex();
-      final bnbBalance = await bsc.getNativeBalanceBNB();
-      _wallets.insert(
-        0,
-        Wallet(
-          id: 'bsc_native',
-          name: 'BNB Testnet',
-          currency: 'Binance Coin',
-          symbol: 'BNB',
-          balance: bnbBalance,
-          address: address,
-          iconUrl: 'bnb',
-          color: const Color(0xFFF3BA2F),
-        ),
-      );
-    } catch (_) {
-      final address = await bsc.getAddressHex();
-      _wallets.insert(
-        0,
-        Wallet(
-          id: 'bsc_native',
-          name: 'BNB Testnet',
-          currency: 'Binance Coin',
-          symbol: 'BNB',
-          balance: 0.0,
-          address: address,
-          iconUrl: 'bnb',
-          color: const Color(0xFFF3BA2F),
-        ),
-      );
-    }
-
-    // Начинаем без истории — будем добавлять реальные отправки
     _transactions = [];
+
+    if (!auth.isAuthenticated) {
+      return; // без токена не можем загрузить кошельки
+    }
+
+    final baseUrl = auth.baseUrl;
+    final headers = auth.authHeaders;
+    try {
+      final resp =
+          await http.get(Uri.parse('$baseUrl/wallets'), headers: headers);
+      if (resp.statusCode == 200) {
+        final List<dynamic> data = json.decode(resp.body);
+        _wallets = data
+            .whereType<Map<String, dynamic>>()
+            .map((w) => Wallet.fromServerJson(w))
+            .toList();
+        return;
+      }
+    } catch (_) {
+      // упадём в резерв ниже
+    }
+
+    // Резерв: если сервер недоступен, оставим список пустым, чтобы не подставлять локальные адреса
+    _wallets = [];
   }
 
   Future<List<Wallet>> getWallets() async {
@@ -121,18 +65,22 @@ class WalletService {
     final auth = AuthService();
     final baseUrl = auth.baseUrl;
     final headers = auth.authHeaders;
-    final resp = await http.get(Uri.parse('$baseUrl/wallets/$walletId/transactions'), headers: headers);
+    final resp = await http.get(
+        Uri.parse('$baseUrl/wallets/$walletId/transactions'),
+        headers: headers);
     if (resp.statusCode == 200) {
       final List<dynamic> data = json.decode(resp.body);
-      return data.map((t) => Transaction(
-        id: t['id'],
-        type: t['type'],
-        amount: (t['amount'] as num).toDouble(),
-        address: t['address'],
-        status: t['status'],
-        timestamp: DateTime.parse(t['timestamp']),
-        currency: t['currency'],
-      )).toList();
+      return data
+          .map((t) => Transaction(
+                id: t['id'],
+                type: t['type'],
+                amount: (t['amount'] as num).toDouble(),
+                address: t['address'],
+                status: t['status'],
+                timestamp: DateTime.parse(t['timestamp']),
+                currency: t['currency'],
+              ))
+          .toList();
     }
     return [];
   }
@@ -154,9 +102,10 @@ class WalletService {
       'symbol': currency,
     });
 
-    final resp = await http.post(Uri.parse('$baseUrl/wallets/import'), headers: headers, body: body);
+    final resp = await http.post(Uri.parse('$baseUrl/wallets/import'),
+        headers: headers, body: body);
     if (resp.statusCode == 201 || resp.statusCode == 200) {
-      // Перезапросим список кошельков
+      // Перезапросим список кошельков с сервера, чтобы отобразить реальные адреса
       await initialize();
       return true;
     }
@@ -174,7 +123,8 @@ class WalletService {
     final bsc = BscService();
     if (wallet.id == 'bsc_token') {
       try {
-        final txHash = await bsc.sendToken(toAddress: toAddress, amount: amount);
+        final txHash =
+            await bsc.sendToken(toAddress: toAddress, amount: amount);
         _transactions.insert(
           0,
           Transaction(
@@ -212,7 +162,8 @@ class WalletService {
     // Отправка нативного BNB
     if (wallet.id == 'bsc_native') {
       try {
-        final txHash = await bsc.sendNativeBNB(toAddress: toAddress, amount: amount);
+        final txHash =
+            await bsc.sendNativeBNB(toAddress: toAddress, amount: amount);
         _transactions.insert(
           0,
           Transaction(

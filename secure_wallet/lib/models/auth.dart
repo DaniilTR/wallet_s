@@ -1,3 +1,5 @@
+import 'wallet.dart';
+
 class User {
   final String id;
   final String username;
@@ -42,6 +44,7 @@ class AuthResponse {
   final bool success;
   final String message;
   final User? user;
+  final List<Wallet>? wallets;
   final String? error;
   final int? statusCode;
 
@@ -49,15 +52,23 @@ class AuthResponse {
     required this.success,
     required this.message,
     this.user,
+    this.wallets,
     this.error,
     this.statusCode,
   });
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
+    final walletsJson = json['wallets'];
     return AuthResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
       user: json['user'] != null ? User.fromJson(json['user']) : null,
+      wallets: walletsJson is List
+          ? walletsJson
+              .whereType<Map<String, dynamic>>()
+              .map((w) => Wallet.fromServerJson(w))
+              .toList()
+          : null,
       error: json['error'],
       statusCode: json['statusCode'] ?? json['status'] ?? json['code'],
     );

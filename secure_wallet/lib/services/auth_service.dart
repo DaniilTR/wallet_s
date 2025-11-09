@@ -5,9 +5,10 @@ import 'package:secure_wallet/models/auth.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();
-  
-  final String baseUrl = 'http://localhost:8080/api'; // Замените на ваш backend URL
-  
+
+  final String baseUrl =
+      'http://localhost:8080/api'; // Замените на ваш backend URL
+
   User? _currentUser;
   String? _token;
 
@@ -51,10 +52,17 @@ class AuthService {
                 _currentUser = authResponse.user;
                 _token = authResponse.user!.token;
               }
+              // Если пришли кошельки — можно сразу где-то сохранить (опционально)
+              if (authResponse.wallets != null) {
+                // Ничего не делаем прямо сейчас; WalletService сам подтянет по запросу.
+              }
               return AuthResponse(
                 success: true,
-                message: authResponse.message.isNotEmpty ? authResponse.message : 'Registration successful',
+                message: authResponse.message.isNotEmpty
+                    ? authResponse.message
+                    : 'Registration successful',
                 user: authResponse.user,
+                wallets: authResponse.wallets,
                 statusCode: response.statusCode,
               );
             } else {
@@ -63,17 +71,27 @@ class AuthService {
                 final user = User.fromJson(data);
                 _currentUser = user;
                 _token = user.token;
-                return AuthResponse(success: true, message: 'Registration successful', user: user, statusCode: response.statusCode);
+                return AuthResponse(
+                    success: true,
+                    message: 'Registration successful',
+                    user: user,
+                    statusCode: response.statusCode);
               } catch (_) {
                 // Fall through to generic success
               }
             }
           }
           // Generic success when parsing didn't fit expected schema
-          return AuthResponse(success: true, message: 'Registration successful', statusCode: response.statusCode);
+          return AuthResponse(
+              success: true,
+              message: 'Registration successful',
+              statusCode: response.statusCode);
         } catch (e) {
           log('[AuthService] Failed to parse register response: $e');
-          return AuthResponse(success: true, message: 'Registration successful, but response parsing failed', statusCode: response.statusCode);
+          return AuthResponse(
+              success: true,
+              message: 'Registration successful, but response parsing failed',
+              statusCode: response.statusCode);
         }
       }
 
@@ -92,11 +110,15 @@ class AuthService {
         }
         // Otherwise provide descriptive 409 error
         String details = '';
-        final headerMsg = response.headers['x-log-message'] ?? response.headers['X-Log-Message'] ?? '';
+        final headerMsg = response.headers['x-log-message'] ??
+            response.headers['X-Log-Message'] ??
+            '';
         try {
           final parsed = json.decode(response.body);
           if (parsed is Map<String, dynamic>) {
-            details = (parsed['message'] ?? parsed['error'] ?? parsed['detail'] ?? '').toString();
+            details =
+                (parsed['message'] ?? parsed['error'] ?? parsed['detail'] ?? '')
+                    .toString();
           } else if (parsed is String) {
             details = parsed;
           }
@@ -107,7 +129,8 @@ class AuthService {
         return AuthResponse(
           success: false,
           message: friendly,
-          error: 'HTTP 409: ${details.isNotEmpty ? details : friendly}${headerMsg.isNotEmpty ? ' | $headerMsg' : ''}',
+          error:
+              'HTTP 409: ${details.isNotEmpty ? details : friendly}${headerMsg.isNotEmpty ? ' | $headerMsg' : ''}',
           statusCode: 409,
         );
       }
@@ -116,32 +139,40 @@ class AuthService {
       if (response.statusCode == 500) {
         log('[AuthService] Register server error (500). Body: ${response.body}');
         String details = '';
-        final headerMsg = response.headers['x-log-message'] ?? response.headers['X-Log-Message'] ?? '';
+        final headerMsg = response.headers['x-log-message'] ??
+            response.headers['X-Log-Message'] ??
+            '';
         try {
           final parsed = json.decode(response.body);
           if (parsed is Map<String, dynamic>) {
-            details = (parsed['message'] ?? parsed['error'] ?? parsed['detail'] ?? '').toString();
+            details =
+                (parsed['message'] ?? parsed['error'] ?? parsed['detail'] ?? '')
+                    .toString();
           } else if (parsed is String) {
             details = parsed;
           }
         } catch (_) {
           // ignore parse errors
         }
-  const friendly = 'Server error during registration';
+        const friendly = 'Server error during registration';
         return AuthResponse(
           success: false,
           message: friendly,
-          error: 'HTTP 500: ${details.isNotEmpty ? details : friendly}${headerMsg.isNotEmpty ? ' | $headerMsg' : ''}',
+          error:
+              'HTTP 500: ${details.isNotEmpty ? details : friendly}${headerMsg.isNotEmpty ? ' | $headerMsg' : ''}',
           statusCode: 500,
         );
       }
 
       log('[AuthService] Register failed with status code: ${response.statusCode}');
-      final headerMsg = response.headers['x-log-message'] ?? response.headers['X-Log-Message'] ?? '';
+      final headerMsg = response.headers['x-log-message'] ??
+          response.headers['X-Log-Message'] ??
+          '';
       return AuthResponse(
         success: false,
         message: 'Registration failed',
-        error: 'Status code: ${response.statusCode}${headerMsg.isNotEmpty ? ' | $headerMsg' : ''}',
+        error:
+            'Status code: ${response.statusCode}${headerMsg.isNotEmpty ? ' | $headerMsg' : ''}',
         statusCode: response.statusCode,
       );
     } catch (e) {
@@ -175,28 +206,32 @@ class AuthService {
         log('[AuthService] Login successful with status 200. Body: ${response.body}');
         try {
           final data = json.decode(response.body);
-          // Бэкенд возвращает { jwt: "..." }. Сохраним токен и продолжим.
-          if (data is Map<String, dynamic> && data['jwt'] is String) {
-            _token = data['jwt'] as String;
+          if (data is Map<String, dynamic>) {
+            final auth = AuthResponse.fromJson(data);
+            if (auth.user != null) {
+              _currentUser = auth.user;
+              _token = auth.user!.token;
+            }
+            return AuthResponse(
+              success: true,
+              message:
+                  auth.message.isNotEmpty ? auth.message : 'Login successful',
+              user: auth.user ?? _currentUser,
+              wallets: auth.wallets,
+              statusCode: 200,
+            );
           }
-          // Попытка распарсить пользователя (если когда-нибудь сервер начнёт отдавать юзера)
-          try {
-            final user = User.fromJson(data);
-            _currentUser ??= user;
-            _token ??= user.token;
-          } catch (_) {
-            // Игнорируем — для навигации достаточно токена
-          }
-          return AuthResponse(success: true, message: 'Login successful', user: _currentUser, statusCode: 200);
+          return AuthResponse(
+              success: true, message: 'Login successful', statusCode: 200);
         } catch (e) {
           log('[AuthService] Failed to parse login response: $e');
-          // Возвращаем успех для навигации, даже если парсинг не удался
-          return AuthResponse(success: true, message: 'Login successful', statusCode: 200);
+          return AuthResponse(
+              success: true, message: 'Login successful', statusCode: 200);
         }
       }
 
       // Обработка всех остальных кодов состояния
-  log('[AuthService] Login failed with status code: ${response.statusCode}');
+      log('[AuthService] Login failed with status code: ${response.statusCode}');
       return AuthResponse(
         success: false,
         message: 'Login failed',
@@ -204,7 +239,7 @@ class AuthService {
         statusCode: response.statusCode,
       );
     } catch (e) {
-  log('[AuthService] An exception occurred during login: $e');
+      log('[AuthService] An exception occurred during login: $e');
       return AuthResponse(
         success: false,
         message: 'An error occurred during login',

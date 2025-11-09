@@ -8,8 +8,8 @@ class Wallet {
   final String symbol;
   final double balance;
   final String address;
-  final String iconUrl;
-  final Color color;
+  final String iconUrl; // UI-атрибут: может вычисляться из symbol
+  final Color color; // UI-атрибут: может вычисляться из symbol
 
   Wallet({
     required this.id,
@@ -18,10 +18,12 @@ class Wallet {
     required this.symbol,
     required this.balance,
     required this.address,
-    required this.iconUrl,
-    required this.color,
-  });
+    String? iconUrl,
+    Color? color,
+  })  : iconUrl = iconUrl ?? _iconForSymbol(symbol),
+        color = color ?? _colorForSymbol(symbol);
 
+  // Универсальный парсер (ожидает все поля, включая UI, если они есть)
   factory Wallet.fromJson(Map<String, dynamic> json) {
     return Wallet(
       id: json['id'],
@@ -30,9 +32,43 @@ class Wallet {
       symbol: json['symbol'],
       balance: (json['balance'] as num).toDouble(),
       address: json['address'],
-      iconUrl: json['iconUrl'],
-      color: Color(json['color']),
+      iconUrl: json['iconUrl'], // может быть null — будет подставлен дефолт
+      color: json['color'] != null ? Color(json['color']) : null,
     );
+  }
+
+  // Парсер данных, приходящих с бэкенда (WalletDTO)
+  factory Wallet.fromServerJson(Map<String, dynamic> json) {
+    return Wallet(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      currency: json['currency'] as String,
+      symbol: json['symbol'] as String,
+      balance: (json['balance'] as num).toDouble(),
+      address: json['address'] as String,
+    );
+  }
+
+  static String _iconForSymbol(String symbol) {
+    switch (symbol.toUpperCase()) {
+      case 'BNB':
+        return 'bnb';
+      case 'T1PS':
+        return 'bsc';
+      default:
+        return 'generic';
+    }
+  }
+
+  static Color _colorForSymbol(String symbol) {
+    switch (symbol.toUpperCase()) {
+      case 'BNB':
+        return const Color(0xFFF3BA2F);
+      case 'T1PS':
+        return const Color(0xFF0098EA);
+      default:
+        return const Color(0xFF627EEA);
+    }
   }
 }
 
