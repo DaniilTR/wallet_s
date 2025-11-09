@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../screens/home_screen.dart';
-import '../services/auth_service.dart';
+import 'package:secure_wallet/screens/home_screen.dart';
+import 'package:secure_wallet/services/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -90,15 +90,15 @@ class _AuthScreenState extends State<AuthScreen> {
         Text(
           'Secure Wallet',
           style: Theme.of(context).textTheme.displayMedium?.copyWith(
-            color: const Color(0xFF0098EA),
-          ),
+                color: const Color(0xFF0098EA),
+              ),
         ),
         const SizedBox(height: 8),
         Text(
           'Your crypto, your control',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey.shade600,
-          ),
+                color: Colors.grey.shade600,
+              ),
         ),
       ],
     );
@@ -392,10 +392,10 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _buildAgeWarning() {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
+  decoration: BoxDecoration(
     color: _selectedAge >= 18
-      ? Colors.green.withAlpha(26)
-      : Colors.red.withAlpha(26),
+    ? Colors.green.withAlpha(26)
+    : Colors.red.withAlpha(26),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: _selectedAge >= 18 ? Colors.green : Colors.red,

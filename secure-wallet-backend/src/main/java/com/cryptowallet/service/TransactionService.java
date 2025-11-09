@@ -13,19 +13,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
+    private final BscService bscService;
 
     public TransactionService(TransactionRepository transactionRepository,
                               WalletRepository walletRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              BscService bscService) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
         this.userRepository = userRepository;
+        this.bscService = bscService;
     }
 
     public List<TransactionDTO> getUserTransactions(String userId) {
@@ -35,39 +39,57 @@ public class TransactionService {
     }
 
     public TransactionDTO sendTransaction(String userId, SendTransactionRequest request) {
-    userRepository.findById(userId).orElseThrow(
+    // явная валидация входных параметров
+    Objects.requireNonNull(request, "request must not be null");
+    userRepository.findById(Objects.requireNonNull(userId, "userId must not be null")).orElseThrow(
         () -> new RuntimeException("User not found"));
 
-        Wallet wallet = walletRepository.findById(request.getFromWalletId())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+    String fromWalletId = Objects.requireNonNull(request.getFromWalletId(), "fromWalletId must not be null");
+    String toAddress = Objects.requireNonNull(request.getToAddress(), "toAddress must not be null");
+    Double amt = Objects.requireNonNull(request.getAmount(), "amount must not be null");
+
+    Wallet wallet = walletRepository.findById(fromWalletId)
+        .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         if (!wallet.getUser().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized: Wallet does not belong to user");
         }
 
-        BigDecimal amount = BigDecimal.valueOf(request.getAmount());
-        if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
-        }
-
+    BigDecimal amount = BigDecimal.valueOf(amt);
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Amount must be greater than 0");
         }
 
-        Transaction transaction = Transaction.builder()
+        // Проверяем баланс ончейн (а не локальный wallet.balance)
+        BigDecimal onchainBalance;
+        try {
+            if (wallet.getSymbol() != null && wallet.getSymbol().equalsIgnoreCase("BNB")) {
+                onchainBalance = bscService.getNativeBalanceBNB(wallet.getAddress());
+            } else {
+                onchainBalance = bscService.getTokenBalance(wallet.getAddress());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch on-chain balance: " + e.getMessage());
+        }
+
+        if (onchainBalance.compareTo(amount) < 0) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+    Transaction transaction = Transaction.builder()
                 .id(UUID.randomUUID().toString())
                 .wallet(wallet)
+        .walletId(wallet.getId())
                 .type("send")
-                .amount(request.getAmount())
-                .toAddress(request.getToAddress())
+        .amount(amount)
+        .toAddress(toAddress)
+                // Пока отправка ончейн не реализована, помечаем завершённой для демонстрации
                 .status("completed")
                 .timestamp(LocalDateTime.now())
                 .currency(wallet.getSymbol())
                 .build();
 
-    wallet.setBalance(wallet.getBalance().subtract(amount));
-        walletRepository.save(wallet);
-
+        Objects.requireNonNull(transaction, "transaction must not be null");
         Transaction savedTransaction = transactionRepository.save(transaction);
         return convertToDTO(savedTransaction);
     }
@@ -77,7 +99,7 @@ public class TransactionService {
         return TransactionDTO.builder()
                 .id(tx.getId())
                 .type(tx.getType())
-                .amount(tx.getAmount())
+                .amount(tx.getAmount() != null ? tx.getAmount().doubleValue() : 0.0)
                 .address(tx.getToAddress())
                 .status(tx.getStatus())
                 .timestamp(tx.getTimestamp().format(formatter))

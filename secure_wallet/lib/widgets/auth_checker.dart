@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../screens/auth_screen.dart';
-import '../screens/home_screen.dart';
-import '../services/auth_service.dart';
+import 'package:secure_wallet/screens/auth_screen.dart';
+import 'package:secure_wallet/screens/home_screen.dart';
+import 'package:secure_wallet/services/auth_service.dart';
 
 /// Виджет, который проверяет статус аутентификации пользователя.
 ///

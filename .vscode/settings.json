@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "D:/Wallet/App/secure_wallet/linux",
+    "java.compile.nullAnalysis.mode": "automatic"
 }

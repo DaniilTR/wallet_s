@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/wallet.dart';
-import '../models/transaction.dart';
-import '../services/wallet_service.dart';
-import '../widgets/wallet_card.dart';
-import '../widgets/transaction_tile.dart';
-import 'wallet_detail_screen.dart';
-import 'send_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:secure_wallet/models/wallet.dart';
+import 'package:secure_wallet/models/transaction.dart';
+import 'package:secure_wallet/services/wallet_service.dart';
+import 'package:secure_wallet/services/auth_service.dart';
+import 'package:secure_wallet/widgets/wallet_card.dart';
+import 'package:secure_wallet/widgets/transaction_tile.dart';
+import 'package:secure_wallet/screens/wallet_detail_screen.dart';
+import 'package:secure_wallet/screens/send_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,7 +71,23 @@ class _HomeScreenState extends State<HomeScreen> {
       elevation: 0,
       pinned: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: const Text('Secure Wallet'),
+      title: Row(
+        children: [
+          const Text('Secure Wallet'),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'acct: ${AuthService().currentUser?.username ?? '—'}',
+              style: TextStyle(color: Colors.grey.shade800, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16),
@@ -80,7 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.settings, size: 20, color: Colors.grey.shade700),
+              child:
+                  Icon(Icons.settings, size: 20, color: Colors.grey.shade700),
             ),
           ),
         ),
@@ -95,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!snapshot.hasData) return const SizedBox.shrink();
 
         final wallets = snapshot.data!;
-        double totalBalance = wallets.fold(0, (sum, w) => sum + w.balance);
+  final totalBalance = wallets.fold(0.0, (sum, w) => sum + w.balance);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,11 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
               'Total Balance',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey.shade600,
-              ),
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
-              '\$${(totalBalance * 50000).toStringAsFixed(2)}',
+              // Форматируем валюту через intl
+              NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                  .format(totalBalance * 50000),
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(height: 12),
@@ -238,12 +259,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showCreateWalletDialog() {
     final nameController = TextEditingController();
-    String selectedCurrency = 'BTC';
+    String selectedCurrency = 'BNB';
+    final addressController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Create New Wallet'),
+        title: const Text('Add/Import Wallet'),
         content: StatefulBuilder(
           builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -263,14 +285,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: OutlineInputBorder(),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'BTC', child: Text('Bitcoin')),
-                  DropdownMenuItem(value: 'ETH', child: Text('Ethereum')),
-                  DropdownMenuItem(value: 'USDT', child: Text('USDT')),
-                  DropdownMenuItem(value: 'USDC', child: Text('USDC')),
+                  DropdownMenuItem(
+                      value: 'BNB', child: Text('BNB (BSC Testnet)')),
+                  DropdownMenuItem(
+                      value: 'T1PS', child: Text('T1PS Token (BEP-20)')),
                 ],
                 onChanged: (value) {
-                  setState(() => selectedCurrency = value ?? 'BTC');
+                  setState(() => selectedCurrency = value ?? 'BNB');
                 },
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Wallet Address (0x...)',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ],
           ),
@@ -281,13 +311,17 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              _walletService.createWallet(
-                name: nameController.text,
+            onPressed: () async {
+              final ok = await _walletService.createWallet(
+                name: nameController.text.trim().isEmpty
+                    ? selectedCurrency
+                    : nameController.text.trim(),
                 currency: selectedCurrency,
+                address: addressController.text.trim(),
               );
+              if (!context.mounted) return;
               Navigator.pop(context);
-              setState(() {});
+              if (ok) setState(() {});
             },
             child: const Text('Create'),
           ),

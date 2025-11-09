@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'config/theme.dart';
-import 'widgets/auth_checker.dart'; // Импортируем наш новый виджет
+import 'package:secure_wallet/config/theme.dart';
+import 'package:secure_wallet/widgets/auth_checker.dart'; // Импортируем наш новый виджет
 
 /// Главная функция приложения.
 void main() {
