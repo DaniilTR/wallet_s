@@ -1,3 +1,5 @@
+// Модель пользователя и ответы аутентификации
+// User — данные профиля; AuthResponse — результат login/register
 class User {
   final String id;
   final String username;

@@ -1,4 +1,4 @@
-// lib/models/transaction.dart
+// Модель транзакции: направление, сумма, адрес, статус и дата
 class Transaction {
   final String id;
   final String type; // 'send' или 'receive'

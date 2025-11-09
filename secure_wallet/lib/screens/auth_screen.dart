@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import '../config/theme.dart';
 import '../screens/home_screen.dart';
 import '../services/auth_service.dart';
 
+// Экран аутентификации (логин/регистрация).
+// Подсказка: чтобы поменять цвета элементов, используйте AppTheme из config/theme.dart
+
+/// Экран аутентификации пользователя.
+///
+/// Содержит две вкладки: вход (Sign In) и регистрация (Sign Up).
+/// Для каждой вкладки есть отдельная форма с полями и валидацией.
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
@@ -43,7 +51,7 @@ class _AuthScreenState extends State<AuthScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              const Color(0xFF0098EA).withOpacity(0.1),
+              AppTheme.primary.withOpacity(0.1),
               const Color(0xFF627EEA).withOpacity(0.1),
             ],
           ),
@@ -70,6 +78,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Шапка экрана с иконкой кошелька, названием приложения и подзаголовком.
   Widget _buildHeader() {
     return Column(
       children: [
@@ -77,7 +86,7 @@ class _AuthScreenState extends State<AuthScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: const Color(0xFF0098EA),
+            color: AppTheme.primary,
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Icon(
@@ -90,7 +99,7 @@ class _AuthScreenState extends State<AuthScreen> {
         Text(
           'Secure Wallet',
           style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                color: const Color(0xFF0098EA),
+                color: AppTheme.primary,
               ),
         ),
         const SizedBox(height: 8),
@@ -104,6 +113,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Переключатели вкладок между входом (Sign In) и регистрацией (Sign Up).
   Widget _buildTabButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -119,9 +129,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: _isLogin
-                          ? const Color(0xFF0098EA)
-                          : Colors.grey.shade600,
+                      color: _isLogin ? AppTheme.primary : Colors.grey.shade600,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -129,7 +137,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Container(
                       height: 3,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0098EA),
+                        color: AppTheme.primary,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -148,9 +156,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: !_isLogin
-                          ? const Color(0xFF0098EA)
-                          : Colors.grey.shade600,
+                      color:
+                          !_isLogin ? AppTheme.primary : Colors.grey.shade600,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -158,7 +165,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Container(
                       height: 3,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0098EA),
+                        color: AppTheme.primary,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -171,6 +178,9 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// ---------------------------------------------------------------------------------------------------------------------
+  /// ---------------------------------------------------------------------------------------------------------------------
+  /// Форма входа: поля Username и Password + кнопка входа.
   Widget _buildLoginForm() {
     return Column(
       children: [
@@ -191,7 +201,7 @@ class _AuthScreenState extends State<AuthScreen> {
             onPressed: _isLoading ? null : _handleLogin,
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
-              backgroundColor: const Color(0xFF0098EA),
+              backgroundColor: AppTheme.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -218,6 +228,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Форма регистрации: ник, email, пароль/подтверждение, выбор возраста, предупреждение и кнопка.
   Widget _buildRegisterForm() {
     return Column(
       children: [
@@ -254,7 +265,7 @@ class _AuthScreenState extends State<AuthScreen> {
             onPressed: _isLoading ? null : _handleRegister,
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
-              backgroundColor: const Color(0xFF0098EA),
+              backgroundColor: AppTheme.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -281,6 +292,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Универсальное текстовое поле с иконкой слева и состояниями рамки.
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -304,7 +316,7 @@ class _AuthScreenState extends State<AuthScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(
-            color: Color(0xFF0098EA),
+            color: AppTheme.primary,
             width: 2,
           ),
         ),
@@ -312,6 +324,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Поле ввода пароля с возможностью показать/скрыть символы.
   Widget _buildPasswordField({
     required TextEditingController controller,
     required String label,
@@ -339,7 +352,7 @@ class _AuthScreenState extends State<AuthScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(
-            color: Color(0xFF0098EA),
+            color: AppTheme.primary,
             width: 2,
           ),
         ),
@@ -347,6 +360,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Селектор возраста при регистрации: позволяет выбрать значение 18–100 лет.
   Widget _buildAgeSelector() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -389,21 +403,22 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Информационный баннер о соответствии возрастным требованиям.
   Widget _buildAgeWarning() {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _selectedAge >= 18 ? Colors.green : Colors.red,
+        color: _selectedAge >= 18 ? AppTheme.success : AppTheme.danger,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _selectedAge >= 18 ? Colors.green : Colors.red,
+          color: _selectedAge >= 18 ? AppTheme.success : AppTheme.danger,
         ),
       ),
       child: Row(
         children: [
           Icon(
             _selectedAge >= 18 ? Icons.check_circle : Icons.info,
-            color: _selectedAge >= 18 ? Colors.green : Colors.red,
+            color: _selectedAge >= 18 ? AppTheme.success : AppTheme.danger,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -412,7 +427,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   ? 'You meet age requirements'
                   : 'You must be at least 18 years old',
               style: TextStyle(
-                color: _selectedAge >= 18 ? Colors.green : Colors.red,
+                color: _selectedAge >= 18 ? AppTheme.success : AppTheme.danger,
                 fontSize: 12,
               ),
             ),
@@ -422,6 +437,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  /// Обработка нажатия на кнопку входа: валидация, запрос к AuthService и переход на Home.
   Future<void> _handleLogin() async {
     if (_loginUsernameController.text.isEmpty ||
         _loginPasswordController.text.isEmpty) {
@@ -449,6 +465,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  /// Обработка нажатия на кнопку регистрации: валидация полей и отправка данных в AuthService.
   Future<void> _handleRegister() async {
     if (_registerUsernameController.text.isEmpty ||
         _registerEmailController.text.isEmpty ||
@@ -496,11 +513,12 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  /// Показать Snackbar с ошибкой.
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppTheme.danger,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../config/theme.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
 import 'dart:convert';
@@ -18,25 +19,29 @@ class WalletService {
     final baseUrl = auth.baseUrl;
     final headers = auth.authHeaders;
 
-    final resp = await http.get(Uri.parse('$baseUrl/wallets'), headers: headers);
+    final resp =
+        await http.get(Uri.parse('$baseUrl/wallets'), headers: headers);
     if (resp.statusCode == 200) {
       final List<dynamic> data = json.decode(resp.body);
-      _wallets = data.map((w) {
-        final symbol = (w['symbol'] ?? '').toString();
-        final color = symbol.toUpperCase() == 'BNB'
-            ? const Color(0xFFF3BA2F)
-            : const Color(0xFF0098EA);
-        return Wallet(
-          id: w['id'],
-          name: w['name'] ?? symbol,
-          currency: w['currency'] ?? symbol,
-          symbol: symbol,
-          balance: (w['balance'] as num?)?.toDouble() ?? 0.0,
-          address: w['address'] ?? '',
-          iconUrl: symbol.toLowerCase(),
-          color: color,
-        );
-      }).toList().cast<Wallet>();
+      _wallets = data
+          .map((w) {
+            final symbol = (w['symbol'] ?? '').toString();
+            final color = symbol.toUpperCase() == 'BNB'
+                ? const Color(0xFFF3BA2F)
+                : AppTheme.primary;
+            return Wallet(
+              id: w['id'],
+              name: w['name'] ?? symbol,
+              currency: w['currency'] ?? symbol,
+              symbol: symbol,
+              balance: (w['balance'] as num).toString(),
+              address: w['address'] ?? '',
+              iconUrl: symbol.toLowerCase(),
+              color: color,
+            );
+          })
+          .toList()
+          .cast<Wallet>();
     } else {
       _wallets = [];
     }
@@ -64,18 +69,22 @@ class WalletService {
     final auth = AuthService();
     final baseUrl = auth.baseUrl;
     final headers = auth.authHeaders;
-    final resp = await http.get(Uri.parse('$baseUrl/wallets/$walletId/transactions'), headers: headers);
+    final resp = await http.get(
+        Uri.parse('$baseUrl/wallets/$walletId/transactions'),
+        headers: headers);
     if (resp.statusCode == 200) {
       final List<dynamic> data = json.decode(resp.body);
-      return data.map((t) => Transaction(
-        id: t['id'],
-        type: t['type'],
-        amount: (t['amount'] as num).toDouble(),
-        address: t['address'],
-        status: t['status'],
-        timestamp: DateTime.parse(t['timestamp']),
-        currency: t['currency'],
-      )).toList();
+      return data
+          .map((t) => Transaction(
+                id: t['id'],
+                type: t['type'],
+                amount: (t['amount'] as num).toDouble(),
+                address: t['address'],
+                status: t['status'],
+                timestamp: DateTime.parse(t['timestamp']),
+                currency: t['currency'],
+              ))
+          .toList();
     }
     return [];
   }
@@ -97,7 +106,8 @@ class WalletService {
       'symbol': currency,
     });
 
-    final resp = await http.post(Uri.parse('$baseUrl/wallets/import'), headers: headers, body: body);
+    final resp = await http.post(Uri.parse('$baseUrl/wallets/import'),
+        headers: headers, body: body);
     if (resp.statusCode == 201 || resp.statusCode == 200) {
       // Перезапросим список кошельков
       await initialize();
@@ -119,7 +129,8 @@ class WalletService {
       'toAddress': toAddress,
       'amount': amount,
     });
-    final resp = await http.post(Uri.parse('$baseUrl/transactions/send'), headers: headers, body: body);
+    final resp = await http.post(Uri.parse('$baseUrl/transactions/send'),
+        headers: headers, body: body);
     if (resp.statusCode == 201 || resp.statusCode == 200) {
       return true;
     }
@@ -127,7 +138,7 @@ class WalletService {
   }
 
   double getTotalBalance() {
-    return _wallets.fold(0.0, (sum, w) => sum + w.balance);
+    return _wallets.fold(0.0, (sum, w) => sum + double.parse(w.balance));
   }
 
   String getShortAddress(String address) {

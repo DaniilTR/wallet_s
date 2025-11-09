@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../config/theme.dart';
+// Главный экран: общий баланс, список кошельков, последние транзакции
 import 'package:intl/intl.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
@@ -9,6 +11,11 @@ import '../widgets/transaction_tile.dart';
 import 'wallet_detail_screen.dart';
 import 'send_screen.dart';
 
+/// Главный экран приложения (Home):
+/// - отображает сводный баланс по всем кошелькам,
+/// - список кошельков пользователя,
+/// - последние транзакции,
+/// - быстрые действия (добавить кошелек / отправить перевод).
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -66,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Верхний app bar со статусом аккаунта и кнопкой настроек.
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       elevation: 0,
@@ -107,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Блок с общим балансом, конвертированным в USD, и кнопками действий.
   Widget _buildBalanceSection() {
     return FutureBuilder<List<Wallet>>(
       future: _walletService.getWallets(),
@@ -114,7 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!snapshot.hasData) return const SizedBox.shrink();
 
         final wallets = snapshot.data!;
-        double totalBalance = wallets.fold(0, (sum, w) => sum + w.balance);
+        // Суммируем балансы корректно как числа, а не конкатенируем строки.
+        final double totalBalance = wallets.fold<double>(
+          0.0,
+          (sum, w) => sum + (double.tryParse(w.balance) ?? 0.0),
+        );
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              // Форматируем валюту через intl
+              // Форматируем валюту через intl (условный коэффициент конвертации)
               NumberFormat.currency(locale: 'en_US', symbol: '\$')
                   .format(totalBalance * 50000),
               style: Theme.of(context).textTheme.displayMedium,
@@ -161,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Кнопка действия на главном экране (Add/Send)
   Widget _buildActionButton({
     required IconData icon,
     required String label,
@@ -169,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF0098EA),
+        backgroundColor: AppTheme.primary,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -186,6 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Секция со списком кошельков. Переход на экран деталей при тапе.
   Widget _buildWalletsSection() {
     return FutureBuilder<List<Wallet>>(
       future: _walletService.getWallets(),
@@ -226,6 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Секция последних транзакций (до 5 штук) с использованием TransactionTile.
   Widget _buildTransactionsSection() {
     return FutureBuilder<List<Transaction>>(
       future: _walletService.getTransactions(),
@@ -257,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Диалог создания/импорта кошелька: имя, валюта и адрес.
   void _showCreateWalletDialog() {
     final nameController = TextEditingController();
     String selectedCurrency = 'BNB';

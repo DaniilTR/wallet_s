@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+// Модель кошелька и вспомогательные сущности (типы валют)
+
 // lib/models/wallet.dart
 class Wallet {
   final String id;
   final String name;
   final String currency;
   final String symbol;
-  final double balance;
+  final String balance;
   final String address;
   final String iconUrl;
   final Color color;
@@ -28,7 +30,7 @@ class Wallet {
       name: json['name'],
       currency: json['currency'],
       symbol: json['symbol'],
-      balance: (json['balance'] as num).toDouble(),
+      balance: (json['balance'] as num).toString(),
       address: json['address'],
       iconUrl: json['iconUrl'],
       color: Color(json['color']),

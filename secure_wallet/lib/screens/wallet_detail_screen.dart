@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../config/theme.dart';
+// Экран конкретного кошелька: шапка с балансом, адрес, действия и список транзакций
 import 'package:flutter/services.dart';
 import '../models/wallet.dart';
 import '../models/transaction.dart';
@@ -6,6 +8,12 @@ import '../services/wallet_service.dart';
 import '../widgets/transaction_tile.dart';
 import 'send_screen.dart';
 
+/// Экран деталей конкретного кошелька:
+/// - шапка с балансом и валютой,
+/// - действия (отправить/получить/обновить),
+/// - адрес кошелька с копированием,
+/// - список всех транзакций по кошельку,
+/// - дополнительные опции в нижнем меню.
 class WalletDetailScreen extends StatefulWidget {
   final Wallet wallet;
 
@@ -61,6 +69,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Шапка кошелька с названием валюты, балансом в токене и в долларах.
   Widget _buildWalletHeader() {
     return Container(
       width: double.infinity,
@@ -99,7 +108,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              '\$${(widget.wallet.balance * 50000).toStringAsFixed(2)}',
+              _formatUsd(widget.wallet.balance),
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
                 fontSize: 16,
@@ -111,6 +120,18 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Форматирует баланс в виде приблизительного USD значения.
+  /// Если строка пустая или не парсится – возвращает `$0.00`.
+  String _formatUsd(String raw) {
+    final value = double.tryParse(raw);
+    if (value == null) return '\$0.00';
+    // Здесь условный курс, можно заменить на реальный курс из API.
+    final usd = value * 50000; // пример: 1 токен ~ 50000 USD (заглушка)
+    // Ограничим до двух знаков после запятой.
+    return '\$${usd.toStringAsFixed(2)}';
+  }
+
+  /// Кнопки действий: отправить, получить адрес, обновить.
   Widget _buildActionButtons() {
     return Row(
       children: [
@@ -140,6 +161,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Плитка кнопки действия для верхнего блока.
   Widget _buildActionIconButton({
     required IconData icon,
     required String label,
@@ -157,7 +179,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
           ),
           child: Column(
             children: [
-              Icon(icon, size: 24, color: const Color(0xFF0098EA)),
+              Icon(icon, size: 24, color: AppTheme.primary),
               const SizedBox(height: 8),
               Text(
                 label,
@@ -173,6 +195,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Секция с адресом кошелька. Тап по блоку копирует адрес в буфер.
   Widget _buildAddressSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -228,6 +251,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Секция со списком транзакций выбранного кошелька.
   Widget _buildTransactionsSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -277,6 +301,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Скопировать адрес кошелька и показать уведомление.
   void _copyAddress() {
     Clipboard.setData(ClipboardData(text: widget.wallet.address));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -287,6 +312,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Диалог "Получить": показывает адрес кошелька для входящих переводов.
   void _showReceiveDialog() {
     showDialog(
       context: context,
@@ -326,6 +352,7 @@ class _WalletDetailScreenState extends State<WalletDetailScreen> {
     );
   }
 
+  /// Нижнее меню с дополнительными опциями кошелька (переименовать/бэкап/удалить).
   void _showWalletOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,

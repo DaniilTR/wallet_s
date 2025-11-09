@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+// Карточка кошелька в списке на главном экране
 import '../models/wallet.dart';
 import '../services/wallet_service.dart';
 
+/// Карточка кошелька в списке на главном экране.
+/// Показывает символ, имя, баланс, сокращённый адрес и статус.
+/// Цветовая схема строится на основе `wallet.color`.
 class WalletCard extends StatelessWidget {
   final Wallet wallet;
 
@@ -48,25 +52,37 @@ class WalletCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            Text(
-              wallet.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${wallet.balance} ${wallet.symbol}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-              ),
+            // Имя кошелька слева, баланс + символ справа (горизонтально)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Text(
+                    wallet.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  '${wallet.balance} ${wallet.symbol}',
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
+            // Нижняя строка: адрес (короткий) + статус
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -74,6 +90,7 @@ class WalletCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Заголовок "Address"
                       Text(
                         'Address',
                         style: TextStyle(
@@ -82,6 +99,7 @@ class WalletCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
+                      // Сокращённый адрес (например 0x1234...ABCD)
                       Text(
                         WalletService().getShortAddress(wallet.address),
                         style: const TextStyle(
@@ -95,8 +113,10 @@ class WalletCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
+                // Индикатор статуса кошелька (статично)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),

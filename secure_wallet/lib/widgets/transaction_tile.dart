@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../config/theme.dart';
 import '../models/transaction.dart';
+
+// Элемент списка транзакций. Цвета статусов берём из AppTheme
 
 class TransactionTile extends StatelessWidget {
   final Transaction transaction;
@@ -10,7 +13,7 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSent = transaction.isSent;
-    final color = isSent ? Colors.red.shade600 : Colors.green.shade600;
+    final color = isSent ? AppTheme.danger : AppTheme.success;
     final icon = isSent ? Icons.arrow_upward : Icons.arrow_downward;
     final label = isSent ? 'Sent' : 'Received';
 
@@ -105,11 +108,11 @@ class TransactionTile extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'completed':
-        return Colors.green;
+        return AppTheme.success;
       case 'pending':
-        return Colors.orange;
+        return AppTheme.warning;
       case 'failed':
-        return Colors.red;
+        return AppTheme.danger;
       default:
         return Colors.grey;
     }

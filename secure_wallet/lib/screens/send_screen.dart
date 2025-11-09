@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import '../config/theme.dart';
+// Экран отправки средств: выбор кошелька, ввод адреса и суммы, оценка комиссии
 import '../models/wallet.dart';
 import '../services/wallet_service.dart';
 
+/// Экран отправки средств (Send):
+/// - выбор исходного кошелька,
+/// - ввод адреса получателя и суммы,
+/// - подсказка по сетевой комиссии и итоговой сумме,
+/// - выполнение транзакции через WalletService.
 class SendScreen extends StatefulWidget {
   const SendScreen({super.key});
 
@@ -69,6 +76,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  /// Секция выбора кошелька-источника. Подсвечивает выбранный.
   Widget _buildSelectWalletSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,14 +108,12 @@ class _SendScreenState extends State<SendScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: isSelected
-                            ? const Color(0xFF0098EA)
+                            ? AppTheme.primary
                             : Colors.grey.shade300,
                         width: isSelected ? 2 : 1,
                       ),
                       borderRadius: BorderRadius.circular(12),
-                      color: isSelected
-                          ? const Color(0xFF0098EA)
-                          : Colors.transparent,
+                      color: isSelected ? AppTheme.primary : Colors.transparent,
                     ),
                     child: Row(
                       children: [
@@ -145,7 +151,7 @@ class _SendScreenState extends State<SendScreen> {
                         if (isSelected)
                           const Icon(
                             Icons.check_circle,
-                            color: Color(0xFF0098EA),
+                            color: AppTheme.primary,
                           ),
                       ],
                     ),
@@ -159,6 +165,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  /// Секция ввода адреса получателя. Позволяет очистить поле.
   Widget _buildRecipientSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +190,7 @@ class _SendScreenState extends State<SendScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: Color(0xFF0098EA),
+                color: AppTheme.primary,
                 width: 2,
               ),
             ),
@@ -202,6 +209,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  /// Секция ввода суммы перевода. Есть быстрый выбор Max (всё доступное).
   Widget _buildAmountSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +251,7 @@ class _SendScreenState extends State<SendScreen> {
                 child: Text(
                   'Max',
                   style: TextStyle(
-                    color: const Color(0xFF0098EA),
+                    color: AppTheme.primary,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -257,6 +265,8 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  /// Информация о сетевой комиссии и итоговой сумме.
+  /// Для BSC комиссия считается в BNB, для прочих — фиксированный пример.
   Widget _buildNetworkFeeSection() {
     final isBscToken = selectedWallet?.id == 'bsc_token';
     final isBscNative = selectedWallet?.id == 'bsc_native';
@@ -300,7 +310,7 @@ class _SendScreenState extends State<SendScreen> {
                     ? '${(double.tryParse(amountController.text) ?? 0)} ${selectedWallet?.symbol ?? ''} + fee in BNB'
                     : '${(double.tryParse(amountController.text) ?? 0) + 0.0001} ${selectedWallet?.symbol ?? 'BTC'}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: const Color(0xFF0098EA),
+                      color: AppTheme.primary,
                     ),
               ),
             ],
@@ -320,6 +330,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  /// Кнопка отправки. Доступна только при валидных данных.
   Widget _buildSendButton() {
     final isValid = selectedWallet != null &&
         addressController.text.isNotEmpty &&
@@ -332,7 +343,7 @@ class _SendScreenState extends State<SendScreen> {
         onPressed: isValid && !isLoading ? _sendTransaction : null,
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: const Color(0xFF0098EA),
+          backgroundColor: AppTheme.primary,
           disabledBackgroundColor: Colors.grey.shade400,
         ),
         child: isLoading
@@ -355,6 +366,7 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
+  /// Выполнить отправку транзакции через WalletService с обработкой ошибок.
   Future<void> _sendTransaction() async {
     setState(() => isLoading = true);
 

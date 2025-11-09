@@ -2,11 +2,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/auth.dart';
 
+// Сервис аутентификации: register/login/logout и хранение текущего пользователя/токена
+
 class AuthService {
   static final AuthService _instance = AuthService._internal();
-  
-  final String baseUrl = 'http://localhost:8080/api'; // Замените на ваш backend URL
-  
+
+  final String baseUrl =
+      'http://localhost:8080/api'; // Замените на ваш backend URL
+
   User? _currentUser;
   String? _token;
 
@@ -41,7 +44,7 @@ class AuthService {
       if (response.statusCode == 201) {
         final data = json.decode(response.body);
         final authResponse = AuthResponse.fromJson(data);
-        
+
         if (authResponse.success && authResponse.user != null) {
           _currentUser = authResponse.user;
           _token = authResponse.user!.token;
@@ -90,7 +93,8 @@ class AuthService {
       }
 
       // Обработка всех остальных кодов состояния
-      print('[AuthService] Login failed with status code: ${response.statusCode}');
+      print(
+          '[AuthService] Login failed with status code: ${response.statusCode}');
       return AuthResponse(
         success: false,
         message: 'Login failed',
