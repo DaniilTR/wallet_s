@@ -39,10 +39,17 @@ public class WalletService {
         createWalletInternal(user, "My BNB", "BSC Testnet", "BNB", BigDecimal.ZERO);
         // 2) Токен T1PS (BEP-20)
         createWalletInternal(user, "My T1PS", "BSC Testnet", "T1PS", BigDecimal.ZERO);
+        // 3) Дополнительный EDA кошелек (пример)
+        createWalletInternal(user, "My EDA", "EDA", "EDA", BigDecimal.ZERO);
     }
 
-        // Создание ETH кошелька
-        createWalletInternal(user, "My EDA", "EDA", "EDA", BigDecimal.ZERO);
+    /** Если у пользователя ещё нет кошельков – создаём дефолтные. */
+    public void ensureDefaultWallets(User user) {
+        if (user == null) return;
+        List<Wallet> wallets = walletRepository.findByUser(user);
+        if (wallets == null || wallets.isEmpty()) {
+            createDefaultWallets(user);
+        }
     }
 
     public List<WalletDTO> getUserWallets(String userId) {
